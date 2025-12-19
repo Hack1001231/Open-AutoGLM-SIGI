@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoGLM Helper</string>
+    <string name="accessibility_service_description">AutoGLM 自动化助手\n\n此服务用于执行手机自动化操作，包括:\n• 模拟点击和滑动\n• 截取屏幕内容\n• 输入文字\n\n所有操作仅在本地执行，不会上传任何数据。</string>
+    <string name="service_running">AutoGLM 服务运行中</string>
+    <string name="service_stopped">AutoGLM 服务已停止</string>
+    <string name="enable_accessibility">请开启无障碍服务</string>
+    <string name="server_status">服务器状态: %s</string>
+    <string name="server_running">运行中 (端口 %d)</string>
+    <string name="server_stopped">已停止</string>
+    <string name="open_settings">打开设置</string>
+    <string name="test_connection">测试连接</string>
+    <string name="connection_success">连接成功！</string>
+    <string name="connection_failed">连接失败: %s</string>
+</resources>
