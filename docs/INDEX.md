@@ -22,6 +22,12 @@
   - 标准工作流程
   - 提交信息规范
 
+- **[GIT_COMMIT_5a2bb98_VISUAL_STOP_SIGNAL_FIX.md](GIT_COMMIT_5a2bb98_VISUAL_STOP_SIGNAL_FIX.md)** - 关键 Bug 修复分析
+  - 视觉停止信号重置问题
+  - 坐标偏移 Bug 的根本原因
+  - 全局状态污染问题
+  - 修复方案和测试建议
+
 ### 版本更新
 - **[UPDATE_SUMMARY_v1.1-SIGI.md](UPDATE_SUMMARY_v1.1-SIGI.md)** - v1.1 版本更新摘要
   - SIGI 品牌升级详情
@@ -78,6 +84,8 @@ Open-AutoGLM-Hybrid-main/
 │   ├── INDEX.md                 # 本文件 - 文档索引
 │   ├── AI_README.md             # AI 助手快速指引
 │   ├── GIT_WORKFLOW.md          # Git 工作流程指南
+│   ├── GIT_COMMIT_5a2bb98_VISUAL_STOP_SIGNAL_FIX.md  # Git 提交分析
+│   ├── PROJECT_REDUNDANCY_ANALYSIS.md  # 项目冗余分析
 │   └── UPDATE_SUMMARY_v1.1-SIGI.md  # v1.1 更新摘要
 │
 └── android-app/
