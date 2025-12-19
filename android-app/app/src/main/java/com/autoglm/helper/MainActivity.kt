@@ -16,15 +16,14 @@ import com.chaquo.python.Python
 
 class MainActivity : Activity(), LogCallback {
 
-    private lateinit var statusText: TextView
     private lateinit var logText: TextView
     private lateinit var logScroll: ScrollView
     private lateinit var logToggle: TextView
     private lateinit var taskInput: EditText
     private lateinit var executeButton: Button
     private lateinit var stopButton: Button
-    private lateinit var openSettingsButton: Button
-    private lateinit var copyLogButton: Button
+    private lateinit var openSettingsButton: TextView
+    private lateinit var copyLogButton: TextView
     
     private val handler = Handler(Looper.getMainLooper())
     private var isTaskRunning = false
@@ -34,7 +33,6 @@ class MainActivity : Activity(), LogCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        statusText = findViewById(R.id.statusText)
         logText = findViewById(R.id.logText)
         logScroll = findViewById(R.id.logScroll)
         logToggle = findViewById(R.id.logToggle)
@@ -94,7 +92,7 @@ class MainActivity : Activity(), LogCallback {
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
         val clip = android.content.ClipData.newPlainText("AutoGLM Log", logText.text.toString())
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, "日志已复制到剪贴板", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Log copied", Toast.LENGTH_SHORT).show()
     }
     
     private fun toggleLogVisibility() {
@@ -118,12 +116,12 @@ class MainActivity : Activity(), LogCallback {
     private fun updateStatus() {
         val service = AutoGLMAccessibilityService.getInstance()
         if (service != null) {
-            statusText.text = "系统状态 :: 就绪"
-            statusText.setTextColor(android.graphics.Color.parseColor("#1976D2"))
+            // 服务就绪，按钮文字改为纯绿色
+            openSettingsButton.setTextColor(android.graphics.Color.parseColor("#00FF00"))
             executeButton.isEnabled = !isTaskRunning
         } else {
-            statusText.text = "系统状态 :: 离线 (需无障碍权限)"
-            statusText.setTextColor(android.graphics.Color.parseColor("#FF5252"))
+            // 服务未就绪，按钮文字改为红色
+            openSettingsButton.setTextColor(android.graphics.Color.parseColor("#FF5252"))
             executeButton.isEnabled = false
         }
         // 只有在任务运行时，停止按钮才可用
@@ -133,7 +131,7 @@ class MainActivity : Activity(), LogCallback {
     private fun startTask() {
         val task = taskInput.text.toString()
         if (task.isBlank()) {
-            Toast.makeText(this, "请输入任务", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please input task", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -156,7 +154,7 @@ class MainActivity : Activity(), LogCallback {
                 runOnUiThread {
                     isTaskRunning = false
                     updateStatus()
-                    Toast.makeText(this, "任务结束", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Task completed", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 runOnUiThread {

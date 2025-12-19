@@ -39,29 +39,32 @@
             android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="系统状态 :: 就绪"
-            android:textSize="12sp"
-            android:letterSpacing="0.1"
-            android:textColor="#1976D2"
-            android:layout_marginTop="4dp" />
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/openSettingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="检查无障碍权限"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#00FF00"
+            android:textSize="14sp"
+            android:gravity="center_vertical"
+            android:paddingEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/openSettingsButton"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="检查无障碍权限 >"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="#1976D2"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_marginBottom="16dp" />
+
 
     <EditText
         android:id="@+id/taskInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/tech_input_border"
-        android:hint="> 请输入任务目标 (例如: 12306买票)..."
+        android:hint="> Task Input (e.g., 12306 ticket booking)..."
         android:fontFamily="sans-serif"
         android:textColorHint="#546E7A"
         android:textColor="#FFFFFF"
@@ -82,7 +85,7 @@
             android:layout_height="56dp"
             android:layout_weight="1"
             android:layout_marginEnd="12dp"
-            android:text="开始执行\nEXECUTE"
+            android:text="EXECUTE"
             android:textSize="14sp"
             android:fontFamily="sans-serif-black"
             android:textColor="#FFFFFF"
@@ -94,7 +97,7 @@
             android:layout_height="56dp"
             android:layout_weight="1"
             android:layout_marginStart="12dp"
-            android:text="终止任务\nABORT"
+            android:text="ABORT"
             android:textSize="14sp"
             android:fontFamily="sans-serif-black"
             android:textColor="#FFFFFF"
@@ -115,7 +118,7 @@
             android:layout_height="wrap_content"
             android:text="▼"
             android:textSize="16sp"
-            android:textColor="#1976D2"
+            android:textColor="#00FF00"
             android:padding="8dp"
             android:clickable="true"
             android:focusable="true"
@@ -125,17 +128,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="任务日志 / SYSTEM LOG"
+            android:text="SYSTEM LOG"
             android:letterSpacing="0.05"
             android:fontFamily="sans-serif-medium"
-            android:textColor="#90CAF9" />
+            android:textColor="#00FF00" />
 
-        <Button
+        <TextView
             android:id="@+id/copyLogButton"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:text="复制日志"
-            android:textColor="#1976D2"
+            android:text="COPY"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:textColor="#00FF00"
+            android:clickable="true"
+            android:focusable="true"
             android:background="?android:attr/selectableItemBackground"
             android:textSize="12sp" />
     </LinearLayout>
@@ -156,7 +164,7 @@
             android:fontFamily="monospace"
             android:textSize="12sp"
             android:lineSpacingMultiplier="1.2"
-            android:text=">_ 等待指令...\n" />
+            android:text=">_ Waiting for command...\n" />
     </ScrollView>
 
 </LinearLayout>

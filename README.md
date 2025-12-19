@@ -63,9 +63,14 @@
 
 ## 文档
 
-- [部署指南](docs/DEPLOYMENT_GUIDE.md)
-- [用户手册](docs/USER_MANUAL.md)
-- [项目对比](docs/PROJECT_COMPARISON.md)
+📚 **[完整文档索引](docs/INDEX.md)** - 查看所有文档
+
+**快速链接**：
+- [AI 助手指引](docs/AI_README.md) - AI 操作仓库必读
+- [Git 工作流程](docs/GIT_WORKFLOW.md) - Git 命令和规范
+- [架构设计](ARCHITECTURE.md) - 技术架构说明
+- [停止机制说明](android-app/docs/STOP_MECHANISM.md) - 了解停止按钮工作原理
+- [构建说明](android-app/docs/BUILD_INSTRUCTIONS.md) - 如何构建 APK
 
 ## Git 使用建议
 

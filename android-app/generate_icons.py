@@ -2,7 +2,7 @@ from PIL import Image
 import os
 
 # 源图片路径
-source_image = r"C:\Users\YANQIAO\Documents\Augment\Open-AutoGLM-Hybrid-main\android-app\app\src\main\res\sigillum_icon.jpg"
+source_image = r"C:\Users\YANQIAO\Documents\Augment\Open-AutoGLM-Hybrid-main\android-app\app\src\main\res\brain_icon.jpg"
 base_path = r"C:\Users\YANQIAO\Documents\Augment\Open-AutoGLM-Hybrid-main\android-app\app\src\main\res"
 
 # 打开源图片
