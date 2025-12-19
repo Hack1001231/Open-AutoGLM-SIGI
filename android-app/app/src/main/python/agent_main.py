@@ -159,6 +159,7 @@ class SimplePhoneAgent:
         
         # 重置停止标志
         android_helper.set_stop(False)
+        android_helper.disable_visual_stop_signal()  # 🔥 重置视觉停止信号
         
         # 初始化消息历史 (放在循环外)
         self.messages = [
