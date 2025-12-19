@@ -119,7 +119,7 @@ class MainActivity : Activity(), LogCallback {
         val service = AutoGLMAccessibilityService.getInstance()
         if (service != null) {
             statusText.text = "系统状态 :: 就绪"
-            statusText.setTextColor(android.graphics.Color.parseColor("#00C853"))
+            statusText.setTextColor(android.graphics.Color.parseColor("#1976D2"))
             executeButton.isEnabled = !isTaskRunning
         } else {
             statusText.text = "系统状态 :: 离线 (需无障碍权限)"

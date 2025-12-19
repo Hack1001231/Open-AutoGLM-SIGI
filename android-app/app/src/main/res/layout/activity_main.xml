@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#FCFCFC">
+    android:background="#0A1929">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,13 +13,27 @@
         android:layout_marginBottom="24dp">
         
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="AUTOGLM / PHONE"
-            android:textSize="28sp"
+            android:text="Sigillum"
+            android:textSize="36sp"
             android:textStyle="bold"
-            android:letterSpacing="0.1"
-            android:textColor="#212121" />
+            android:letterSpacing="0.05"
+            android:fontFamily="serif"
+            android:textColor="#FFFFFF"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mentis"
+            android:textSize="36sp"
+            android:textStyle="bold|italic"
+            android:letterSpacing="0.05"
+            android:fontFamily="serif"
+            android:textColor="#90CAF9"
+            android:gravity="center"
+            android:layout_marginTop="-8dp" />
 
         <TextView
             android:id="@+id/statusText"
@@ -28,7 +42,7 @@
             android:text="系统状态 :: 就绪"
             android:textSize="12sp"
             android:letterSpacing="0.1"
-            android:textColor="#00C853"
+            android:textColor="#1976D2"
             android:layout_marginTop="4dp" />
     </LinearLayout>
 
@@ -38,7 +52,7 @@
         android:layout_height="48dp"
         android:text="检查无障碍权限 >"
         android:fontFamily="sans-serif-medium"
-        android:textColor="#00C853"
+        android:textColor="#1976D2"
         style="?android:attr/borderlessButtonStyle"
         android:layout_marginBottom="16dp" />
 
@@ -49,8 +63,8 @@
         android:background="@drawable/tech_input_border"
         android:hint="> 请输入任务目标 (例如: 12306买票)..."
         android:fontFamily="sans-serif"
-        android:textColorHint="#90A4AE"
-        android:textColor="#263238"
+        android:textColorHint="#546E7A"
+        android:textColor="#FFFFFF"
         android:inputType="textMultiLine"
         android:minLines="3"
         android:padding="16dp"
@@ -101,7 +115,7 @@
             android:layout_height="wrap_content"
             android:text="▼"
             android:textSize="16sp"
-            android:textColor="#00C853"
+            android:textColor="#1976D2"
             android:padding="8dp"
             android:clickable="true"
             android:focusable="true"
@@ -114,14 +128,14 @@
             android:text="任务日志 / SYSTEM LOG"
             android:letterSpacing="0.05"
             android:fontFamily="sans-serif-medium"
-            android:textColor="#455A64" />
+            android:textColor="#90CAF9" />
 
         <Button
             android:id="@+id/copyLogButton"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:text="复制日志"
-            android:textColor="#00C853"
+            android:textColor="#1976D2"
             android:background="?android:attr/selectableItemBackground"
             android:textSize="12sp" />
     </LinearLayout>
@@ -131,14 +145,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#FFFFFF"
+        android:background="#1A2332"
         android:padding="12dp">
 
         <TextView
             android:id="@+id/logText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#212121"
+            android:textColor="#E3F2FD"
             android:fontFamily="monospace"
             android:textSize="12sp"
             android:lineSpacingMultiplier="1.2"
