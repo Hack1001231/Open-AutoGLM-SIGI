@@ -92,12 +92,14 @@ def take_screenshot():
                 img_data = base64.b64decode(data['image'])
                 image = Image.open(BytesIO(img_data))
                 
-                # 更新屏幕尺寸
+                # 🔥 关键修复：在添加横幅之前更新屏幕尺寸
+                # 这样横幅不会影响坐标缩放计算
                 if image.width > 0 and image.height > 0:
                     SCREEN_WIDTH = image.width
                     SCREEN_HEIGHT = image.height
                 
                 # 如果启用了视觉停止信号，叠加红色横幅
+                # 注意：横幅会改变返回图片的尺寸，但不影响 SCREEN_WIDTH/HEIGHT
                 if VISUAL_STOP_SIGNAL:
                     image = _add_stop_banner(image)
                     
