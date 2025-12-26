@@ -133,13 +133,56 @@ class AutoGLMAccessibilityService : AccessibilityService() {
      */
     /**
      * 执行点击操作 - 优先尝试查找节点并点击，失败则使用手势
+     * 
+     * 🔥 弹窗修复：遍历所有 Window（包括 Dialog/BottomSheet），而不是只用 rootInActiveWindow
      */
     fun performTap(x: Int, y: Int): Boolean {
-        // 1. 尝试查找该位置的可点击节点
+        // 🔥🔥🔥 版本标识：确认新代码已部署
+        Log.d(TAG, "========== performTap V2.0 START ==========")
+        Log.d(TAG, "🎯 Target: ($x, $y)")
+        
+        // 🔥 1. 遍历所有 Window 查找可点击节点（解决弹窗问题）
+        try {
+            val allWindows = windows
+            if (allWindows != null && allWindows.isNotEmpty()) {
+                Log.d(TAG, "📱 Found ${allWindows.size} windows (including popups)")
+                
+                // 按 Z-order 从上到下遍历（layer 越大越靠上）
+                for (window in allWindows.sortedByDescending { it.layer }) {
+                    val windowRoot = window.root ?: continue
+                    
+                    Log.d(TAG, "  🪟 Checking window: layer=${window.layer}, type=${window.type}, title=${window.title}")
+                    
+                    val clickableNode = findClickableNodeAt(windowRoot, x, y)
+                    if (clickableNode != null) {
+                        val nodeText = clickableNode.text?.toString() ?: ""
+                        val nodeDesc = clickableNode.contentDescription?.toString() ?: ""
+                        Log.d(TAG, "  ✅ Found node: class=${clickableNode.className}, text='$nodeText', desc='$nodeDesc'")
+                        
+                        val success = clickableNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                        if (success) {
+                            val nodeInfo = "${clickableNode.className} ('${nodeText}') bounds=${getBounds(clickableNode)}"
+                            Log.d(TAG, "🎉🎉🎉 SUCCESS! ACTION_CLICK on -> $nodeInfo (window layer=${window.layer})")
+                            Log.d(TAG, "========== performTap V2.0 END (SUCCESS via Window) ==========")
+                            clickableNode.recycle()
+                            return true
+                        }
+                        Log.w(TAG, "  ⚠️ Found node but ACTION_CLICK failed, trying next...")
+                        clickableNode.recycle()
+                    }
+                }
+                Log.d(TAG, "❌ No clickable node found in any of ${allWindows.size} windows")
+            } else {
+                Log.w(TAG, "⚠️ windows is null or empty!")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Error iterating windows: ${e.message}")
+        }
+        
+        // 2. 备选：使用 rootInActiveWindow（兼容旧版本）
         val rootNode = rootInActiveWindow
         if (rootNode != null) {
-            // 调试：打印该坐标下的所有节点（包括不可点击的）
-            Log.d(TAG, "Inspecting nodes at ($x, $y):")
+            Log.d(TAG, "Inspecting nodes at ($x, $y) via rootInActiveWindow:")
             inspectNodesAt(rootNode, x, y)
             
             val clickableNode = findClickableNodeAt(rootNode, x, y)
@@ -154,14 +197,15 @@ class AutoGLMAccessibilityService : AccessibilityService() {
                 Log.w(TAG, "Tap at ($x, $y): Found clickable node but ACTION_CLICK failed")
                 clickableNode.recycle()
             } else {
-                Log.d(TAG, "Tap at ($x, $y): No clickable node found, falling back to gesture")
+                Log.d(TAG, "Tap at ($x, $y): No clickable node found via rootInActiveWindow")
             }
         } else {
              Log.w(TAG, "Tap at ($x, $y): rootInActiveWindow is null")
         }
 
-        // 2. 如果找不到节点或点击失败，使用手势模拟
-        return try {
+        // 3. 如果找不到节点或点击失败，使用手势模拟
+        Log.d(TAG, "⚡ Falling back to dispatchGesture at ($x, $y)...")
+        val gestureSuccess = try {
             val path = Path()
             path.moveTo(x.toFloat(), y.toFloat())
             
@@ -185,12 +229,19 @@ class AutoGLMAccessibilityService : AccessibilityService() {
             }, null)
             
             latch.await(5, TimeUnit.SECONDS)
-            Log.d(TAG, "Tap at ($x, $y): Gesture success=$success")
+            Log.d(TAG, "⚡ Gesture result: success=$success")
             success
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to perform tap", e)
+            Log.e(TAG, "❌ Failed to perform gesture tap", e)
             false
         }
+        
+        if (gestureSuccess) {
+            Log.d(TAG, "========== performTap V2.0 END (SUCCESS via Gesture) ==========")
+        } else {
+            Log.w(TAG, "========== performTap V2.0 END (FAILED - all methods failed) ==========")
+        }
+        return gestureSuccess
     }
     
     // 调试辅助：打印坐标下的节点信息
@@ -219,56 +270,55 @@ class AutoGLMAccessibilityService : AccessibilityService() {
     }
 
     private fun findClickableNodeAt(node: AccessibilityNodeInfo, x: Int, y: Int): AccessibilityNodeInfo? {
+        // 收集所有包含目标坐标的 clickable 节点
+        val candidates = mutableListOf<Pair<AccessibilityNodeInfo, Int>>() // node to area
+        collectClickableNodes(node, x, y, candidates)
+        
+        if (candidates.isEmpty()) {
+            return null
+        }
+        
+        // 选择 bounds 面积最小的节点（最精确匹配）
+        val best = candidates.minByOrNull { it.second }!!
+        Log.d(TAG, "    Found ${candidates.size} clickable candidates, selected smallest (area=${best.second})")
+        
+        // 回收其他候选节点
+        for ((candidate, _) in candidates) {
+            if (candidate != best.first) {
+                candidate.recycle()
+            }
+        }
+        
+        return best.first
+    }
+    
+    private fun collectClickableNodes(
+        node: AccessibilityNodeInfo, 
+        x: Int, 
+        y: Int, 
+        candidates: MutableList<Pair<AccessibilityNodeInfo, Int>>
+    ) {
         val rect = android.graphics.Rect()
         node.getBoundsInScreen(rect)
         
         // 只有当点在区域内才继续
         if (!rect.contains(x, y)) {
-            return null
+            return
         }
-
-        // 优先检查子节点（因为子节点在上面）
-        // 从后往前遍历（Z-order），不过 AccessibilityNodeInfo children 顺序不一定对应 Z-order，但一般是可以的
-        for (i in node.childCount - 1 downTo 0) {
+        
+        // 如果当前节点是 clickable，添加到候选列表
+        if (node.isClickable) {
+            val area = rect.width() * rect.height()
+            Log.d(TAG, "    Found clickable node: ${node.className}, text='${node.text}', bounds=$rect, area=$area")
+            candidates.add(Pair(AccessibilityNodeInfo.obtain(node), area))
+        }
+        
+        // 继续遍历子节点
+        for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
-            val result = findClickableNodeAt(child, x, y)
-            if (result != null) {
-                // 找到了子节点，返回它
-                // 注意：child 本身在递归中如果没有被返回，已经被 recycle 了（由调用者负责）
-                // 但在这里，findClickableNodeAt 返回了一个有效的 node，所以不需要在这里 recycle child
-                // 等等，child 是父节点生成的。递归调用后，如果返回非空，说明找到了。
-                // 如果返回空，说明没找到，我们需要 recycle child。
-                // 这里的逻辑有点绕，让我们简化：
-                // 如果递归返回了 result，那么 result 是一个有效的 node（可能是 child 或者 child 的后代）
-                // child 引用本身可能已经失效（如果 result 是 child 的后代），或者 result 就是 child。
-                // 无论如何，我们只关心 result。
-                // 但是！我们需要确保 child 被 recycle，如果 result 不是 child。
-                // 实际上，AccessibilityNodeInfo 的引用管理很麻烦。
-                
-                // 简单点：每个层级只负责 recycle 它自己产生的 child 引用。
-                // 如果返回了 result，那么 result 必须是 caller 负责 recycle 的。
-                
-                return result
-            }
+            collectClickableNodes(child, x, y, candidates)
             child.recycle()
         }
-
-        // 检查当前节点是否可点击
-        if (node.isClickable) {
-            // 返回这一节点。但在 AccessibilityService 中，可以通过 obtain 来复制节点？
-            // 不，直接返回。调用者（performTap）会负责 recycle 它。
-            // 但是 node 是从外面传进来的，或者是 getChild 得到的。
-            // 为了安全，我们可以返回 node 的一个副本，或者约定调用者负责。
-            // 在这个递归结构中，如果返回 node，上层循环中的 child.recycle() 就不应该执行。
-            
-            // 为了简单，我们使用一种更安全的策略：只在最顶层调用处 recycle。
-            // 但这样会导致中间节点无法及时回收。
-            
-            // 妥协方案：如果当前节点可点击，返回 AccessibilityNodeInfo.obtain(node)
-            return AccessibilityNodeInfo.obtain(node)
-        }
-
-        return null
     }
 
     /**

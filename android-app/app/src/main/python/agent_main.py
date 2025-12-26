@@ -44,6 +44,7 @@ SYSTEM_PROMPT = (
 1. ⚠️ **输入前必须点击**：在执行 `Type` 输入文字之前，**必须**先执行 `Tap` 点击输入框，确保键盘弹出且光标闪烁。这是输入成功的关键！
 2. ✅ **优先点击"热门搜索"**：如果既有热门词又有搜索框，优先点击热门词（效率更高）。
 3. 🔄 **输入失败处理**：如果 `Type` 后没有反应，请尝试再点击一次输入框，或者点击左上角返回。
+4. 📏 **长屏幕修正**：对于底部弹窗按钮（如"加入购物车"），点击时请自觉将 Y 坐标上移 15%，例如目标在 Y=800，请输出 Y=680。
 
 """
 )
@@ -58,12 +59,14 @@ class SimplePhoneAgent:
         openai.api_key = api_key
         openai.api_base = base_url
         
+        # 🔥 使用用户配置的 API 地址
         self.model_name = "autoglm-phone"
-        self.url = "http://123.56.104.148:10200/v1"
+        self.url = self.base_url
         self.max_steps = 40  # 原始最大步数
         self.dynamic_max_steps = 40  # 动态最大步数（可被停止按钮修改）
         self.current_step = 0  # 当前执行到第几步
         self.history = []
+        self.current_app = None  # 🔥 记录当前 App，用于分应用策略
         
         # 防死循环机制
         self.recent_actions = []  # 记录最近的动作
@@ -102,7 +105,9 @@ class SimplePhoneAgent:
             if action_type == "launch":
                 app_match = re.search(r'app\s*=\s*["\'](.+?)["\']', action_str)
                 if app_match:
-                    return ('launch', app_match.group(1))
+                    app_name = app_match.group(1)
+                    self.current_app = app_name  # 🔥 更新当前 App
+                    return ('launch', app_name)
             
             elif action_type == "tap":
                 elem_match = re.search(r'element\s*=\s*\[(\d+)\s*,\s*(\d+)\]', action_str)
@@ -154,8 +159,8 @@ class SimplePhoneAgent:
         Returns:
             True 如果检测到重复，False 否则
         """
-        if not action or action[0] in ['finish', 'wait', 'launch']:
-            # finish/wait/launch 不参与重复检测
+        if not action or action[0] in ['finish', 'wait', 'launch', 'back']:
+            # finish/wait/launch/back 不参与重复检测
             return False
         
         # 将动作转换为字符串用于比较
@@ -175,6 +180,15 @@ class SimplePhoneAgent:
             if len(set(last_n_actions)) == 1:
                 log_callback.onLog(f"⚠️ 检测到重复动作 {self.max_repeat_count} 次: {action_str}")
                 log_callback.onLog(f"💡 建议: AI 可能陷入死循环，尝试其他操作或结束任务")
+                
+                # 🔥 自动执行返回操作帮助脱困
+                log_callback.onLog(f"🔧 自动执行返回操作，帮助 AI 脱困...")
+                android_helper.go_back()
+                time.sleep(0.5)
+                
+                # 清空最近动作历史，给 AI 一个"新开始"
+                self.recent_actions.clear()
+                
                 return True
         
         return False
@@ -325,9 +339,10 @@ class SimplePhoneAgent:
                         "但页面没有变化。这说明当前操作无效。\n"
                         "请尝试：\n"
                         "1. 点击不同的坐标位置（例如列表项的中心或下方）\n"
-                        "2. 使用 Swipe 滑动查看更多内容\n"
-                        "3. 使用 Back 返回重新操作\n"
-                        "4. 如果任务已完成，使用 finish() 结束"
+                        "2. ⚠️ 如果是点击弹窗按钮无效，尝试大幅降低 Y 坐标（例如 Y-100）\n"
+                        "3. 使用 Swipe 滑动查看更多内容\n"
+                        "4. 使用 Back 返回重新操作\n"
+                        "5. 如果任务已完成，使用 finish() 结束"
                     )
                     self.messages.append({
                         "role": "user",
@@ -342,6 +357,7 @@ class SimplePhoneAgent:
                 
                 elif action[0] == 'launch':
                     _, app_name = action
+                    self.current_app = app_name # 🔥 更新当前 App
                     log_callback.onLog(f"[APP] 正在启动: {app_name}")
                     
                     # 捕获 print 输出
@@ -374,6 +390,12 @@ class SimplePhoneAgent:
                     scaled_x, scaled_y = self._scale_coordinates(x, y)
                     android_helper.click(scaled_x, scaled_y)
                     log_callback.onLog(f"[TAP] 点击 ({x},{y}) -> ({scaled_x},{scaled_y})")
+                    
+                    # 🔧 智能等待：点击中下部时等待弹窗展开
+                    # 弹窗触发按钮(选规格 Y≈240, 加入购物车 Y≈770)
+                    if y > 200:
+                        time.sleep(0.5)
+                        log_callback.onLog(f"[...] 等待弹窗展开 (500ms)")
                 
                 elif action[0] == 'swipe':
                     _, x1, y1, x2, y2 = action
@@ -384,7 +406,8 @@ class SimplePhoneAgent:
                 
                 elif action[0] == 'input':
                     _, text = action
-                    android_helper.input_text(text)
+                    # 🔥 传递当前 App 名称，触发特殊策略
+                    android_helper.input_text(text, app_name=self.current_app)
                     log_callback.onLog(f"[TYPE] 输入: {text}")
                 
                 elif action[0] == 'back':

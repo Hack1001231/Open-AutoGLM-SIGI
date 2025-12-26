@@ -81,6 +81,7 @@ def is_ready():
 # 全局屏幕尺寸 (默认值，会被截图更新)
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 2400
+SCREENSHOT_COUNTER = 0  # 🔧 调试：截图计数器
 
 def take_screenshot():
     """截取屏幕"""
@@ -103,6 +104,16 @@ def take_screenshot():
                 # 注意：横幅会改变返回图片的尺寸，但不影响 SCREEN_WIDTH/HEIGHT
                 if VISUAL_STOP_SIGNAL:
                     image = _add_stop_banner(image)
+                    
+                # 🔧 调试：保存截图到手机存储用于对比
+                global SCREENSHOT_COUNTER
+                SCREENSHOT_COUNTER += 1
+                try:
+                    save_path = f"/sdcard/apk_screenshot_{SCREENSHOT_COUNTER}.png"
+                    image.save(save_path, "PNG")
+                    print(f"🔧 [DEBUG] 截图已保存: {save_path}")
+                except Exception as save_err:
+                    print(f"🔧 [DEBUG] 保存截图失败: {save_err}")
                     
                 return image
         return None
@@ -187,6 +198,7 @@ def tap(x, y):
 # 保持兼容性别名
 click = tap
 
+
 def swipe(x1, y1, x2, y2, duration=500):
     """滑动屏幕"""
     try:
@@ -209,13 +221,17 @@ def swipe(x1, y1, x2, y2, duration=500):
         print(f"滑动失败: {e}")
         return False
 
-def input_text_via_adb_keyboard(text):
-    """使用 ADB Keyboard 输入文本（通过内部 API）"""
+def input_text_via_adb_keyboard(text, send_enter=False):
+    """使用 ADB Keyboard 输入文本（通过内部 API）
+    Args:
+        text: 要输入的文本
+        send_enter: Boolean, 是否在输入后发送回车/发送键
+    """
     import base64
     import time
     
     try:
-        print(f"🔄 使用 ADB Keyboard 输入: {text}")
+        print(f"🔄 使用 ADB Keyboard 输入: {text} (Send Enter: {send_enter})")
         
         # 1. 切换到 ADB Keyboard（通过 HTTP 请求 Kotlin 端）
         response = requests.post(
@@ -231,11 +247,12 @@ def input_text_via_adb_keyboard(text):
         print(f"✅ 已切换到 ADB Keyboard")
         time.sleep(2.0)  # 给系统时间绑定
         
-        # 🟢 关键：如果记录了点击位置，重新点一下夺回焦点
-        if LAST_CLICK_POS[0] is not None:
-            print(f"🎯 正在重新点击位置 {LAST_CLICK_POS} 以夺回焦点...")
-            tap(LAST_CLICK_POS[0], LAST_CLICK_POS[1])
-            time.sleep(0.5)
+        # 🟢 [已移除] 危险逻辑：不要重新点击上一次的位置
+        # 原因：页面切换后（如从列表进入聊天），上一次点击的坐标可能对应的是聊天记录（如视频），导致误触
+        # if LAST_CLICK_POS[0] is not None:
+        #    print(f"🎯 正在重新点击位置 {LAST_CLICK_POS} 以夺回焦点...")
+        #    tap(LAST_CLICK_POS[0], LAST_CLICK_POS[1])
+        #    time.sleep(0.5)
             
         # 2. 清空输入框
         requests.post(
@@ -256,9 +273,22 @@ def input_text_via_adb_keyboard(text):
             timeout=3
         )
         print(f"⌨️ 已输入: {text}")
-        time.sleep(0.3)
+        time.sleep(0.5)
+
+        # 🔥 4. 发送回车/发送键 (针对微信等)
+        if send_enter:
+            print(f"🚀 发送回车指令 (Code 66)...")
+            requests.post(
+                f"{HELPER_URL}/adb_broadcast",
+                json={
+                    'action': 'ADB_EDITOR_CODE',
+                    'extras': {'code': '66'} 
+                },
+                timeout=3
+            )
+            time.sleep(0.5)
         
-        # 4. 恢复原有输入法（通过 HTTP 请求）
+        # 5. 恢复原有输入法（通过 HTTP 请求）
         requests.post(
             f"{HELPER_URL}/restore_ime",
             timeout=3
@@ -271,8 +301,28 @@ def input_text_via_adb_keyboard(text):
         print(f"❌ ADB Keyboard 输入失败: {e}")
         return False
 
-def input_text(text):
-    """输入文本（优先使用 AccessibilityService，失败时使用 ADB Keyboard）"""
+def input_text(text, app_name=None):
+    """输入文本（优先使用 AccessibilityService，失败时使用 ADB Keyboard）
+    Args:
+        text: 输入文本
+        app_name: 当前 App 名称，用于特殊策略
+    """
+    
+    # 🔥🔥🔥 策略路由：微信强制使用 ADB + Enter 🔥🔥🔥
+    if app_name and "微信" in app_name:
+        print(f"⚡ [策略] 检测到微信，启动混合双打模式...")
+        
+        # 0. 先尝试用无障碍服务“摸一下”输入框，目的是获取焦点 (Focus & Tap)
+        # 即使它输入失败也没关系，关键是它会尝试点击输入框，确保键盘弹出
+        try:
+            print("👉 [预热] 尝试通过无障碍服务获取输入框焦点...")
+            requests.post(f"{HELPER_URL}/input", json={'text': ''}, timeout=2)
+        except Exception as e:
+            print(f"⚠️ 预热聚焦失败(非致命): {e}")
+            
+        # 1. 然后执行 ADB 强力输入 + 回车
+        return input_text_via_adb_keyboard(text, send_enter=True)
+        
     try:
         # 1️⃣ 优先尝试 AccessibilityService
         response = requests.post(
