@@ -87,14 +87,23 @@ class MainActivity : Activity(), LogCallback {
         }
         
         stopButton.setOnClickListener {
+            // 🌍 拯救世界计数器
+            val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+            val saveCount = prefs.getInt("world_save_count", 0) + 1
+            prefs.edit().putInt("world_save_count", saveCount).apply()
+            
             // Visual Interaction: Turn Green + EXTINGUISH Star
             stopButton.setBackgroundResource(R.drawable.btn_salvation) // Turn Green
-            stopButton.setTextColor(android.graphics.Color.parseColor("#00E676"))
+            stopButton.setTextColor(android.graphics.Color.WHITE) // 白色文字
             stopButton.text = "SAVED" // 🌍 拯救！
             stopStarSignal()
             
             onLog("🛑 CONNECTION SEVERED.")
             onLog("🌍 YOU SAVED THE WORLD... AGAIN.")
+            onLog("") // 空行
+            onLog("═══════════════════════════════════════")
+            onLog("  You have saved the world $saveCount times")
+            onLog("═══════════════════════════════════════")
             
             try {
                 val py = Python.getInstance()
