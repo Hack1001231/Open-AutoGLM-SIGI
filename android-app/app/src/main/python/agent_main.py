@@ -217,7 +217,6 @@ class SimplePhoneAgent:
         
         # 重置停止标志
         android_helper.set_stop(False)
-        android_helper.disable_visual_stop_signal()  # 🔥 重置视觉停止信号
         
         # 初始化消息历史 (放在循环外)
         self.messages = [
@@ -354,6 +353,11 @@ class SimplePhoneAgent:
                     break
                 
                 elif action[0] == 'launch':
+                    # 🔥 检查停止标志（避免干扰用户）
+                    if self.current_step >= self.dynamic_max_steps or android_helper.should_stop():
+                        log_callback.onLog("[!] 检测到停止信号，跳过启动APP")
+                        continue  # 跳过此动作，继续下一步
+                    
                     _, app_name = action
                     self.current_app = app_name # 🔥 更新当前 App
                     log_callback.onLog(f"[APP] 正在启动: {app_name}")
@@ -384,6 +388,11 @@ class SimplePhoneAgent:
                     time.sleep(2)
                 
                 elif action[0] == 'tap':
+                    # 🔥 检查停止标志（避免干扰用户）
+                    if self.current_step >= self.dynamic_max_steps or android_helper.should_stop():
+                        log_callback.onLog("[!] 检测到停止信号，跳过点击动作")
+                        continue
+                    
                     _, x, y = action
                     scaled_x, scaled_y = self._scale_coordinates(x, y)
                     android_helper.click(scaled_x, scaled_y)
@@ -396,6 +405,11 @@ class SimplePhoneAgent:
                         log_callback.onLog(f"[...] 等待弹窗展开 (500ms)")
                 
                 elif action[0] == 'swipe':
+                    # 🔥 检查停止标志（避免干扰用户）
+                    if self.current_step >= self.dynamic_max_steps or android_helper.should_stop():
+                        log_callback.onLog("[!] 检测到停止信号，跳过滑动动作")
+                        continue
+                    
                     _, x1, y1, x2, y2 = action
                     sx1, sy1 = self._scale_coordinates(x1, y1)
                     sx2, sy2 = self._scale_coordinates(x2, y2)
@@ -403,16 +417,31 @@ class SimplePhoneAgent:
                     log_callback.onLog(f"[SWIPE] 滑动")
                 
                 elif action[0] == 'input':
+                    # 🔥 检查停止标志（避免干扰用户）
+                    if self.current_step >= self.dynamic_max_steps or android_helper.should_stop():
+                        log_callback.onLog("[!] 检测到停止信号，跳过输入动作")
+                        continue
+                    
                     _, text = action
                     # 🔥 传递当前 App 名称，触发特殊策略
                     android_helper.input_text(text, app_name=self.current_app)
                     log_callback.onLog(f"[TYPE] 输入: {text}")
                 
                 elif action[0] == 'back':
+                    # 🔥 检查停止标志（避免干扰用户）
+                    if self.current_step >= self.dynamic_max_steps or android_helper.should_stop():
+                        log_callback.onLog("[!] 检测到停止信号，跳过返回动作")
+                        continue
+                    
                     log_callback.onLog(f"[<-] 返回")
                     android_helper.go_back()
                 
                 elif action[0] == 'home':
+                    # 🔥 检查停止标志（避免干扰用户）
+                    if self.current_step >= self.dynamic_max_steps or android_helper.should_stop():
+                        log_callback.onLog("[!] 检测到停止信号，跳过Home动作")
+                        continue
+                    
                     log_callback.onLog(f"[HOME] 主屏幕")
                     android_helper.go_home()
                 

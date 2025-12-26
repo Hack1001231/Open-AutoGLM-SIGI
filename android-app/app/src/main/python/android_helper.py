@@ -57,7 +57,6 @@ APP_PACKAGES = {
 
 # 全局控制标志
 STOP_FLAG = False
-VISUAL_STOP_SIGNAL = False  # 视觉停止信号
 
 def set_stop(stop):
     """设置停止标志"""
@@ -68,17 +67,6 @@ def set_stop(stop):
 def should_stop():
     """检查是否应该停止"""
     return STOP_FLAG
-
-def enable_visual_stop_signal():
-    """启用视觉停止信号（在截图上叠加红色横幅）"""
-    global VISUAL_STOP_SIGNAL
-    VISUAL_STOP_SIGNAL = True
-    print("🛑 视觉停止信号已启用")
-
-def disable_visual_stop_signal():
-    """禁用视觉停止信号"""
-    global VISUAL_STOP_SIGNAL
-    VISUAL_STOP_SIGNAL = False
 
 def is_ready():
     """检查服务是否就绪"""
@@ -98,7 +86,7 @@ SCREENSHOT_COUNTER = 0  # 🔧 调试：截图计数器
 
 def take_screenshot():
     """截取屏幕"""
-    global SCREEN_WIDTH, SCREEN_HEIGHT, VISUAL_STOP_SIGNAL
+    global SCREEN_WIDTH, SCREEN_HEIGHT
     try:
         response = requests.get(f"{HELPER_URL}/screenshot", timeout=10)
         if response.status_code == 200:
@@ -107,16 +95,10 @@ def take_screenshot():
                 img_data = base64.b64decode(data['image'])
                 image = Image.open(BytesIO(img_data))
                 
-                # 🔥 关键修复：在添加横幅之前更新屏幕尺寸
-                # 这样横幅不会影响坐标缩放计算
+                # 更新屏幕尺寸
                 if image.width > 0 and image.height > 0:
                     SCREEN_WIDTH = image.width
                     SCREEN_HEIGHT = image.height
-                
-                # 如果启用了视觉停止信号，叠加红色横幅
-                # 注意：横幅会改变返回图片的尺寸，但不影响 SCREEN_WIDTH/HEIGHT
-                if VISUAL_STOP_SIGNAL:
-                    image = _add_stop_banner(image)
                     
                 # 🔧 调试：保存截图到手机存储用于对比
                 global SCREENSHOT_COUNTER
@@ -133,62 +115,6 @@ def take_screenshot():
     except Exception as e:
         print(f"截图失败: {e}")
         return None
-
-def _add_stop_banner(image):
-    """在图片顶部添加红色停止横幅，并给全图加红边框"""
-    try:
-        width, height = image.size
-        # 加大横幅高度到 15%
-        banner_height = int(height * 0.15) 
-        
-        # 创建新图片（红色背景）
-        new_image = Image.new('RGB', (width, height + banner_height), (220, 53, 69))
-        
-        # 将原图粘贴到下方
-        new_image.paste(image, (0, banner_height))
-        
-        try:
-            draw = ImageDraw.Draw(new_image)
-            
-            # 画一个粗红框包围原图内容
-            border_width = 20
-            draw.rectangle(
-                [0, banner_height, width, height + banner_height], 
-                outline="red", 
-                width=border_width
-            )
-
-            # 绘制 3 个极大的 "X"
-            icon_size = int(banner_height * 0.7)
-            gap = int(banner_height * 0.5)
-            y_start = int(banner_height * 0.15)
-            
-            # 居中
-            total_width = 3 * icon_size + 2 * gap
-            start_x = (width - total_width) // 2
-            
-            for i in range(3):
-                x = start_x + i * (icon_size + gap)
-                rect_x1 = int(x)
-                rect_y1 = int(y_start)
-                rect_x2 = int(x + icon_size)
-                rect_y2 = int(y_start + icon_size)
-                
-                # 画白色填充的 X (两条宽线)
-                line_w = int(icon_size * 0.2)
-                draw.line([rect_x1, rect_y1, rect_x2, rect_y2], fill="white", width=line_w)
-                draw.line([rect_x2, rect_y1, rect_x1, rect_y2], fill="white", width=line_w)
-
-        except Exception as e:
-            print(f"绘制横幅失败: {e}")
-        
-        return new_image
-        
-    except Exception as e:
-        print(f"添加横幅严重错误: {e}")
-        return image
-
-
 
 def tap(x, y):
     """点击屏幕"""

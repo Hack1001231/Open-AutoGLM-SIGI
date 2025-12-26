@@ -99,17 +99,12 @@ class MainActivity : Activity(), LogCallback {
             try {
                 val py = Python.getInstance()
                 
-                // 1. 启用视觉停止信号（快速响应）
-                val helperModule = py.getModule("android_helper")
-                helperModule.callAttr("enable_visual_stop_signal")
-                onLog("✅ 已在下一帧截图上添加红色停止横幅")
-                
-                // 2. 设置软着陆（保底机制，1步后强制停止）
+                // 设置软着陆（1步后强制停止）
                 val agentModule = py.getModule("agent_main")
                 val result = agentModule.callAttr("stop_gracefully", 1).toInt()
                 
                 if (result > 0) {
-                    onLog("✅ 已设置保底停止点：第 $result 步")
+                    onLog("✅ 已设置停止点：第 $result 步")
                 } else {
                     onLog("⚠️ 当前没有正在运行的任务")
                 }
