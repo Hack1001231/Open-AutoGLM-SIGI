@@ -27,6 +27,9 @@ class MainActivity : Activity(), LogCallback {
     private lateinit var settingsButton: android.widget.ImageButton // The Gear Icon
     private lateinit var sparklingStar: android.widget.ImageView // The Three Body Star
     private lateinit var titleImage: android.widget.ImageView // Pixel Art Title
+    private lateinit var clearInputButton: android.widget.ImageView // Clear Input Button
+    private lateinit var btnDoomsdayList: TextView
+    private lateinit var btnAddTask: android.widget.ImageView
     
     private val handler = Handler(Looper.getMainLooper())
     private var isTaskRunning = false
@@ -51,6 +54,9 @@ class MainActivity : Activity(), LogCallback {
         sparklingStar = findViewById(R.id.sparklingStar)
         settingsButton = findViewById(R.id.settingsButton)
         titleImage = findViewById(R.id.titleImage)
+        clearInputButton = findViewById(R.id.clearInputButton)
+        btnDoomsdayList = findViewById(R.id.btnDoomsdayList)
+        btnAddTask = findViewById(R.id.btnAddTask)
         
         val logLabel = findViewById<TextView>(R.id.logLabel)
         
@@ -70,6 +76,25 @@ class MainActivity : Activity(), LogCallback {
         
         // Removed manual typeface override to allow XML font (@font/vt323_regular) to work
         // -------------------------------------------------------
+
+        // Clear Input Logic
+        clearInputButton.setOnClickListener {
+            taskInput.setText("")
+        }
+
+        taskInput.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.isNullOrEmpty()) {
+                    clearInputButton.visibility = View.GONE
+                    btnAddTask.visibility = View.GONE
+                } else {
+                    clearInputButton.visibility = View.VISIBLE
+                    btnAddTask.visibility = View.VISIBLE
+                }
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
         
         // Settings Button Logic
         settingsButton.setOnClickListener {
@@ -87,10 +112,9 @@ class MainActivity : Activity(), LogCallback {
         }
         
         stopButton.setOnClickListener {
-            // 🌍 拯救世界计数器
+            // 🌍 拯救世界计数器 (Read Only here)
             val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
-            val saveCount = prefs.getInt("world_save_count", 0) + 1
-            prefs.edit().putInt("world_save_count", saveCount).apply()
+            val saveCount = prefs.getInt("world_save_count", 0)
             
             // Visual Interaction: Turn Green + EXTINGUISH Star
             stopButton.setBackgroundResource(R.drawable.btn_salvation) // Turn Green
@@ -120,6 +144,15 @@ class MainActivity : Activity(), LogCallback {
             } catch (e: Exception) {
                 onLog("❌ 停止失败: ${e.message}")
             }
+            
+            // 🛑 FORCE RESET UI STATE after delay (Prevent stuck button)
+            handler.postDelayed({
+                if (isTaskRunning) {
+                    isTaskRunning = false
+                    updateStatus()
+                    onLog("🔄 System reset complete.")
+                }
+            }, 2000)
         }
         
         openSettingsButton.setOnClickListener {
@@ -135,6 +168,102 @@ class MainActivity : Activity(), LogCallback {
         
         // 🎬 Start Pixel Title Animation
         playPixelTitleAnimation()
+        
+        // Apply Skin (Ensure correct state on cold start)
+        // Apply Skin (Ensure correct state on cold start)
+        applySkin()
+        
+        // Doomsday List Logic
+        btnDoomsdayList.setOnClickListener { showDoomsdayListDialog() }
+        
+        btnAddTask.setOnClickListener {
+            val task = taskInput.text.toString().trim()
+            if (task.isNotEmpty()) {
+                addToDoomsdayList(task)
+                Toast.makeText(this, "Protocol Encoded into Doomsday Log.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
+    // --- Doomsday List Features ---
+    
+    private val DEFAULT_PROTOCOLS = listOf(
+        "打开微信，给微信里的好友某某，发一条短信：你好吗",
+        "打开淘宝，查看已购商品里的水龙头",
+        "打开12306，查找12月30日，北京去上海的火车票",
+        "打开微博，发一条：世界你好",
+        "打开美团，去附近最近的肯德基，买一份香辣鸡腿堡",
+        "打开网易云音乐，搜周杰伦的歌曲"
+    )
+    
+    private fun showDoomsdayListDialog() {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_doomsday_list)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        val listContainer = dialog.findViewById<android.widget.LinearLayout>(R.id.listContainer)
+        val btnClose = dialog.findViewById<Button>(R.id.btnCloseList)
+        
+        // Load List
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        // Simple JSON-like parsing or delimiter storage for simplicity
+        val savedSet = prefs.getStringSet("doomsday_list", null)
+        val protocols = if (savedSet != null) savedSet.toList().sorted() else DEFAULT_PROTOCOLS // Set has no order, sort ensures stability
+        
+        // Build Views
+        val termGreen = android.graphics.Color.parseColor("#00E676")
+        
+        // Fix for "Unresolved reference: core" - Use native API with backward compatibility check
+        val typeFace = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            resources.getFont(R.font.vt323_regular)
+        } else {
+            android.graphics.Typeface.MONOSPACE
+        }
+        
+        protocols.forEach { protocol ->
+            val tv = TextView(this)
+            tv.text = "> $protocol"
+            tv.setTextColor(termGreen) // All Green as requested
+            tv.textSize = 14f // Compact printer size
+            tv.setPadding(0, 16, 0, 16)
+            tv.typeface = typeFace // VT323
+            tv.letterSpacing = 0.05f // Slight spacing for readability
+            
+            // Add click listener to fill input
+            tv.setOnClickListener {
+                taskInput.setText(protocol)
+                taskInput.setSelection(taskInput.text.length) // Move cursor to end
+                dialog.dismiss()
+            }
+            
+            // Add hover/press effect via background
+            val outValue = android.util.TypedValue()
+            theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+            tv.setBackgroundResource(outValue.resourceId)
+            
+            listContainer.addView(tv)
+            
+             // Divider
+            val divider = View(this)
+            divider.layoutParams = android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 1
+            )
+            divider.setBackgroundColor(android.graphics.Color.parseColor("#3300E676"))
+            listContainer.addView(divider)
+        }
+        
+        btnClose.setOnClickListener { dialog.dismiss() }
+        
+        dialog.show()
+    }
+    
+    private fun addToDoomsdayList(task: String) {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val savedSet = prefs.getStringSet("doomsday_list", null)
+        val newSet = savedSet?.toMutableSet() ?: DEFAULT_PROTOCOLS.toMutableSet()
+        
+        newSet.add(task)
+        prefs.edit().putStringSet("doomsday_list", newSet).apply()
     }
 
     // Only Animation and Color Change - NO TEXT CHANGE
@@ -197,6 +326,35 @@ class MainActivity : Activity(), LogCallback {
     override fun onResume() {
         super.onResume()
         updateStatus()
+        applySkin()
+    }
+    
+    private fun applySkin() {
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val saveCount = prefs.getInt("world_save_count", 0)
+        var skin = prefs.getString("app_skin", "black")
+        
+        // 🔒 STRICT LOCK: If count < 2, FORCE revert to black (Shadow/Void)
+        if (saveCount < 2) {
+            skin = "black"
+        }
+        
+        val bgImage = findViewById<android.widget.ImageView>(R.id.backgroundImage)
+        
+        if (skin == "red_coast") {
+            bgImage.setImageResource(R.drawable.bg_red_coast) 
+            bgImage.alpha = 0.8f
+        } else if (skin == "trisolaris") { 
+            // Fallback or specific user setting if they somehow selected it, but main flow is Red Coast
+            // Actually, user strict requirement: Settings BG != Cover BG.
+            // Cover = Red Coast. Settings = Trisolaris.
+             bgImage.setImageResource(R.drawable.bg_red_coast)
+             bgImage.alpha = 0.8f
+        } else {
+            // Default Black / Dark Void
+            bgImage.setImageDrawable(null)
+            bgImage.setBackgroundColor(android.graphics.Color.BLACK)
+        }
     }
 
     private fun updateStatus() {
@@ -274,8 +432,21 @@ class MainActivity : Activity(), LogCallback {
         updateStatus() // 更新按钮状态
         startStarSignal() // 🌟 发射信号：三体星开始闪烁
         
-        // Read Config from SharedPreferences
+        // 🌍 计数器逻辑移至此处 (每次执行任务 +1)
         val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val saveCount = prefs.getInt("world_save_count", 0) + 1
+        prefs.edit().putInt("world_save_count", saveCount).apply()
+        
+        // Check for Skin Unlock (Threshold: 2)
+        if (saveCount == 2) {
+            // UNLOCK & AUTO-APPLY
+            prefs.edit().putString("app_skin", "red_coast").apply()
+            applySkin() // Immediate visual upgrade
+            // onLog("✨ SYSTEM UPGRADE: RED COAST LINK ESTABLISHED ✨") 
+            Toast.makeText(this, "New Skin Unlocked: Red Coast Base", Toast.LENGTH_LONG).show()
+        }
+        
+        // Read Config from SharedPreferences
         val apiKey = prefs.getString("api_key", "562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI")
         val baseUrl = prefs.getString("base_url", "https://open.bigmodel.cn/api/paas/v4/")
         val modelName = prefs.getString("model_name", "autoglm-phone")

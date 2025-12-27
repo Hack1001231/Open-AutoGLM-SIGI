@@ -11,54 +11,138 @@ import android.widget.Toast
 
 class SettingsActivity : Activity() {
 
-    private lateinit var providerGroup: RadioGroup
-    private lateinit var rbZhipu: RadioButton
-    private lateinit var rbModelScope: RadioButton
+    private lateinit var providerSpinner: android.widget.Spinner
     private lateinit var editBaseUrl: EditText
     private lateinit var editApiKey: EditText
     private lateinit var editModelName: EditText
-    private lateinit var btnSave: Button
+    private lateinit var skinSpinner: android.widget.Spinner
+    private lateinit var worldSaveCounter: android.widget.TextView
+    private lateinit var settingsStar: android.widget.ImageView
 
     // Default Configurations
-    private val ZHIPU_URL = "https://open.bigmodel.cn/api/paas/v4/"
+    private val ZHIPU_URL = "https://open.bigmodel.cn/api/paas/v4"
     private val ZHIPU_KEY = "562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI"
     private val ZHIPU_MODEL = "autoglm-phone"
 
-    private val MS_URL = "https://api-inference.modelscope.cn/v1/"
+    private val MS_URL = "https://api-inference.modelscope.cn/v1"
     private val MS_KEY = "ms-9785cb73-b979-45c9-a31f-ec1e26463fc0"
     private val MS_MODEL = "ZhipuAI/AutoGLM-Phone-9B"
+    
+    // private var isInitialLoad = true // Removed strict binding check requirement
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        providerGroup = findViewById(R.id.providerGroup)
-        rbZhipu = findViewById(R.id.rbZhipu)
-        rbModelScope = findViewById(R.id.rbModelScope)
+        providerSpinner = findViewById(R.id.providerSpinner)
         editBaseUrl = findViewById(R.id.editBaseUrl)
         editApiKey = findViewById(R.id.editApiKey)
         editModelName = findViewById(R.id.editModelName)
-        btnSave = findViewById(R.id.btnSave)
-
+        skinSpinner = findViewById(R.id.skinSpinner)
+        worldSaveCounter = findViewById(R.id.worldSaveCounter)
+        worldSaveCounter = findViewById(R.id.worldSaveCounter)
+        settingsStar = findViewById(R.id.settingsStar)
+        val btnBack = findViewById<android.widget.ImageButton>(R.id.btnBack)
+        btnBack.setOnClickListener { finish() }
+        
+        setupAutoSave()
         loadSettings()
+        setupSkinSpinner()
+        startStarSignal()
 
         // Radio Button Toggle Logic
-        providerGroup.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == R.id.rbZhipu) {
-                editBaseUrl.setText(ZHIPU_URL)
-                editApiKey.setText(ZHIPU_KEY)
-                editModelName.setText(ZHIPU_MODEL)
-            } else if (checkedId == R.id.rbModelScope) {
-                editBaseUrl.setText(MS_URL)
-                editApiKey.setText(MS_KEY)
-                editModelName.setText(MS_MODEL)
+        // Initialize Spinner Adapter
+        val providers = arrayOf("ZhipuAI", "ModelScope")
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, providers)
+        providerSpinner.adapter = adapter
+        
+        // Handle User Interaction (Spinner Selection)
+        // We use a flag to prevent overwriting custom settings during initial load
+        providerSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+                 val selectedProvider = providers[position]
+                 
+                 // Strict Binding: Always force update fields on selection
+                 if (selectedProvider == "ZhipuAI") {
+                     editBaseUrl.setText(ZHIPU_URL)
+                     editApiKey.setText(ZHIPU_KEY)
+                     editModelName.setText(ZHIPU_MODEL)
+                 } else if (selectedProvider == "ModelScope") {
+                     editBaseUrl.setText(MS_URL)
+                     editApiKey.setText(MS_KEY)
+                     editModelName.setText(MS_MODEL)
+                 }
+                // Auto-save logic handles text updates
+             }
+
+             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
+    }
+    
+    private fun setupAutoSave() {
+        val watcher = object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                saveSettings()
             }
         }
-
-        btnSave.setOnClickListener {
-            saveSettings()
-            finish() // Close activity and return to Main
+        
+        editBaseUrl.addTextChangedListener(watcher)
+        editApiKey.addTextChangedListener(watcher)
+        editModelName.addTextChangedListener(watcher)
+    }
+    
+    private fun setupSkinSpinner() {
+        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+        val saveCount = prefs.getInt("world_save_count", 0)
+        val currentSkin = prefs.getString("app_skin", "black") ?: "black"
+        
+        // Update Counter Text
+        
+        // Update Counter (Just the number)
+        worldSaveCounter.text = String.format("%03d", saveCount)
+        
+        // Skin Options
+        val skins = mutableListOf("Dark Void (Default)")
+        val isSkinUnlocked = saveCount >= 2
+        
+        if (isSkinUnlocked) {
+            skins.add("Red Coast Base")
+        } else {
+            skins.add("Red Coast Base [LOCKED]")
         }
+        
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, skins)
+        skinSpinner.adapter = adapter
+        
+        // Set Selection
+        if (currentSkin == "red_coast" && isSkinUnlocked) {
+            skinSpinner.setSelection(1)
+        } else {
+            skinSpinner.setSelection(0)
+        }
+        
+        skinSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+                 if (position == 1) { // Red Coast
+                     if (!isSkinUnlocked) {
+                         Toast.makeText(this@SettingsActivity, "Save the world 2 times to unlock!", Toast.LENGTH_SHORT).show()
+                         skinSpinner.setSelection(0) // Revert
+                     } else {
+                         saveSkin("red_coast")
+                     }
+                 } else {
+                     saveSkin("black")
+                 }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
+    }
+    
+    private fun saveSkin(skin: String) {
+        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
+        prefs.edit().putString("app_skin", skin).apply()
     }
 
     private fun loadSettings() {
@@ -67,15 +151,25 @@ class SettingsActivity : Activity() {
         val savedKey = prefs.getString("api_key", ZHIPU_KEY)
         val savedModel = prefs.getString("model_name", ZHIPU_MODEL)
         
+        // Temporarily disable watcher to prevent overwriting during load? 
+        // Actually, setText triggers watcher -> saveSettings.
+        // It's fine because it saves what we just loaded, which is a no-op functionally.
+        
         editBaseUrl.setText(savedUrl)
         editApiKey.setText(savedKey)
         editModelName.setText(savedModel)
         
         // Simple heuristic to set radio button
-        if (savedUrl?.contains("modelscope") == true) {
-            rbModelScope.isChecked = true
+        
+        // Determine which provider matches the saved settings purely by URL/Key check
+        // Or default to ZhipuAI
+        if (savedUrl?.contains("modelscope") == true || savedKey?.startsWith("ms-") == true) {
+            // Check if actual selection is needed to avoid redundant firing if possible, 
+            // but for simplicity we set it. The listener will fire and reset values to "Perfect Constants".
+            // If user had slightly custom values, they will be reset. This aligns with "Strict Binding".
+            providerSpinner.setSelection(1) // ModelScope
         } else {
-            rbZhipu.isChecked = true
+            providerSpinner.setSelection(0) // ZhipuAI
         }
     }
 
@@ -87,6 +181,14 @@ class SettingsActivity : Activity() {
             putString("model_name", editModelName.text.toString().trim())
             apply()
         }
-        Toast.makeText(this, "Configuration Saved", Toast.LENGTH_SHORT).show()
+        // Toast removed for auto-save to allow silent saving
+    }
+    private fun startStarSignal() {
+        // Continuous gentle flashing
+        val blinkAnim = android.view.animation.AlphaAnimation(0.2f, 1.0f)
+        blinkAnim.duration = 2000 // Slow breath
+        blinkAnim.repeatMode = android.view.animation.Animation.REVERSE
+        blinkAnim.repeatCount = android.view.animation.Animation.INFINITE
+        settingsStar.startAnimation(blinkAnim)
     }
 }

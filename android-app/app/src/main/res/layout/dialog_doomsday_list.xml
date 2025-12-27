@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#111111"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="> DOOMSDAY PROTOCOLS"
+        android:fontFamily="@font/vt323_regular"
+        android:textColor="#00E676"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:shadowColor="#8800E676"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="8"
+        android:paddingBottom="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/tech_separator_line_bottom" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <LinearLayout
+            android:id="@+id/listContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnCloseList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CLOSE LOG"
+        android:textColor="#00E676"
+        android:textSize="14sp"
+        android:fontFamily="@font/vt323_regular"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

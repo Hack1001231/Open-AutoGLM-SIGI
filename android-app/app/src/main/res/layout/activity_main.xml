@@ -3,14 +3,13 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <!-- Background Image: Red Coast Base & Starry Sky -->
+    <!-- Background Image: Dynamic -->
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_red_coast"
-        android:alpha="0.8" />
+        android:background="#000000" />
 
 
 
@@ -49,6 +48,12 @@
 
         </LinearLayout>
 
+        <!-- Container for Top Labels -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
         <!-- Accessibility Settings Link - Just above input -->
         <TextView
             android:id="@+id/openSettingsButton"
@@ -61,22 +66,72 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?android:attr/selectableItemBackground"
-            android:layout_marginBottom="4dp" />
+            android:layout_marginBottom="4dp"
+            android:layout_weight="1" />
 
-        <EditText
-            android:id="@+id/taskInput"
+        <!-- 2. Doomsday List Toggle (Parallel to Accessibility) -->
+        <TextView
+            android:id="@+id/btnDoomsdayList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DOOMSDAY PROTOCOLS"
+            android:fontFamily="@font/vt323_regular"
+            android:textColor="@color/terminal_green"
+            android:textSize="12sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_marginBottom="4dp" />
+            
+        </LinearLayout> 
+        <!-- End of Label Row -->
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/tech_input_border"
-            android:hint="> Imput 'Thought Seal' Command..."
-            android:fontFamily="@font/vt323_regular"
-            android:textSize="18sp"
-            android:textColorHint="@color/terminal_green_dark"
-            android:textColor="@color/terminal_green"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:padding="16dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp">
+
+            <EditText
+                android:id="@+id/taskInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tech_input_border"
+                android:hint="> Input 'Thought Seal' Command..."
+                android:fontFamily="@font/vt323_regular"
+                android:textSize="18sp"
+                android:textColorHint="@color/terminal_green_dark"
+                android:textColor="@color/terminal_green"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:padding="16dp" />
+
+            <ImageView
+                android:id="@+id/clearInputButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="6dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_clear"
+                android:visibility="gone"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Clear text" />
+                
+            <!-- ADD TASK Button (+) -->
+            <ImageView
+                android:id="@+id/btnAddTask"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="6dp"
+                android:layout_marginBottom="6dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_add_task"
+                android:visibility="gone"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Add to list" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
