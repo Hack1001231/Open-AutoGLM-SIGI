@@ -90,9 +90,17 @@ class SettingsActivity : Activity() {
         val hiddenWorldBgSettings = findViewById<android.widget.ImageView>(R.id.hiddenWorldBgSettings)
         val dragTrigger = findViewById<android.view.View>(R.id.dragTriggerSettings)
         
-        // Init off-screen
+        // Robust Layout Listener
+        uiContainer.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+            val height = bottom - top
+            if (height > 0 && uiContainer.translationY == 0f) {
+                hiddenWorldBgSettings.translationY = height.toFloat()
+            }
+        }
+        
+        // Initial Force Set
         uiContainer.post {
-            hiddenWorldBgSettings.translationY = uiContainer.height.toFloat()
+            resetRevealState(uiContainer, hiddenWorldBgSettings)
         }
         
         dragTrigger.setOnTouchListener(object : android.view.View.OnTouchListener {
@@ -124,24 +132,32 @@ class SettingsActivity : Activity() {
                      }
                      android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
                          isDragging = false
-                         // Spring back animation
-                         uiContainer.animate()
-                             .translationY(0f)
-                             .setDuration(500)
-                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
-                             .start()
-                             
-                         hiddenWorldBgSettings.animate()
-                             .translationY(uiContainer.height.toFloat())
-                             .setDuration(500)
-                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
-                             .start()
+                         resetRevealState(uiContainer, hiddenWorldBgSettings, animate = true)
                          return true
                      }
                  }
                  return false
              }
         })
+    }
+    
+    // Self-healing reset function
+    private fun resetRevealState(ui: android.view.View, bg: android.view.View, animate: Boolean = false) {
+        if (animate) {
+            ui.animate()
+                .translationY(0f)
+                .setDuration(400)
+                .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                .start()
+            bg.animate()
+                .translationY(ui.height.toFloat())
+                .setDuration(400)
+                .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                .start()
+        } else {
+            ui.translationY = 0f
+            bg.translationY = ui.height.toFloat()
+        }
     }
     
     private fun setupAutoSave() {
@@ -299,22 +315,28 @@ class SettingsActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
-        
-        val prefs = getSharedPreferences("AutoGLMConfig", Context.MODE_PRIVATE)
-        val isSfxEnabled = prefs.getBoolean("app_sfx_enabled", true)
-        
-        if (isSfxEnabled) {
-            // Start Cosmic Ripples BGM
-            try {
+        // Start Cosmic Ripples BGM
+        try {
+            val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+            val isBgmEnabled = prefs.getBoolean("sfx_enabled", true)
+            
+            if (isBgmEnabled) {
                 if (bgmPlayer == null) {
                     bgmPlayer = android.media.MediaPlayer.create(this, R.raw.bgm_cosmic_ripples)
                     bgmPlayer?.isLooping = true
-                    bgmPlayer?.setVolume(0.5f, 0.5f) // Set volume to 50% for ambient feel
+                    bgmPlayer?.setVolume(0.5f, 0.5f) 
                 }
                 bgmPlayer?.start()
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        
+        // Fix stuck UI
+        val uiContainer = findViewById<android.widget.FrameLayout>(R.id.uiContainerSettings)
+        val hiddenWorldBgSettings = findViewById<android.widget.ImageView>(R.id.hiddenWorldBgSettings)
+        if (uiContainer != null && hiddenWorldBgSettings != null) {
+            uiContainer.post { resetRevealState(uiContainer, hiddenWorldBgSettings) }
         }
     }
 

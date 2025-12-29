@@ -223,9 +223,17 @@ class MainActivity : Activity(), LogCallback {
         val hiddenWorldBg = findViewById<android.widget.ImageView>(R.id.hiddenWorldBg)
         val dragTrigger = findViewById<android.view.View>(R.id.dragTrigger)
         
-        // Init off-screen
+        // Robust Layout Listener: Keeps hidden world synced even if layout changes (keyboard, dialogs)
+        uiContainer.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+            val height = bottom - top
+            if (height > 0 && uiContainer.translationY == 0f) {
+                hiddenWorldBg.translationY = height.toFloat()
+            }
+        }
+        
+        // Initial Force Set
         uiContainer.post {
-            hiddenWorldBg.translationY = uiContainer.height.toFloat()
+            resetRevealState(uiContainer, hiddenWorldBg)
         }
         
         dragTrigger.setOnTouchListener(object : android.view.View.OnTouchListener {
@@ -242,15 +250,14 @@ class MainActivity : Activity(), LogCallback {
                      android.view.MotionEvent.ACTION_MOVE -> {
                          if (!isDragging) return false
                          val deltaY = event.rawY - startY
-                         val maxDrag = resources.displayMetrics.heightPixels * 0.8f // Allow deeper drag
+                         val maxDrag = resources.displayMetrics.heightPixels * 0.8f 
                          
                          if (deltaY < 0) {
-                             val dampFactor = 0.6f // Less resistance to see more
+                             val dampFactor = 0.6f 
                              val targetY = deltaY * dampFactor
                              
                              if (kotlin.math.abs(targetY) < maxDrag) {
                                 uiContainer.translationY = targetY
-                                // Sync Image: Start from bottom (height), move up by targetY (negative)
                                 hiddenWorldBg.translationY = uiContainer.height.toFloat() + targetY
                              }
                          }
@@ -258,18 +265,7 @@ class MainActivity : Activity(), LogCallback {
                      }
                      android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
                          isDragging = false
-                         // Spring back animation
-                         uiContainer.animate()
-                             .translationY(0f)
-                             .setDuration(500)
-                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
-                             .start()
-                             
-                         hiddenWorldBg.animate()
-                             .translationY(uiContainer.height.toFloat())
-                             .setDuration(500)
-                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
-                             .start()
+                         resetRevealState(uiContainer, hiddenWorldBg, animate = true)
                          return true
                      }
                  }
@@ -277,6 +273,27 @@ class MainActivity : Activity(), LogCallback {
              }
         })
     }
+
+    private fun resetRevealState(ui: android.view.View, bg: android.view.View, animate: Boolean = false) {
+        if (animate) {
+            ui.animate()
+                .translationY(0f)
+                .setDuration(400)
+                .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                .start()
+            bg.animate()
+                .translationY(ui.height.toFloat())
+                .setDuration(400)
+                .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                .start()
+        } else {
+            ui.translationY = 0f
+            bg.translationY = ui.height.toFloat()
+        }
+    }
+
+
+    
     
     // --- Doomsday List Features ---
     
@@ -447,6 +464,13 @@ class MainActivity : Activity(), LogCallback {
         super.onResume()
         updateStatus()
         applySkin()
+        
+        // Force layout reset to prevent stuck UI
+        val uiContainer = findViewById<android.widget.FrameLayout>(R.id.uiContainer)
+        val hiddenWorldBg = findViewById<android.widget.ImageView>(R.id.hiddenWorldBg)
+        if (uiContainer != null && hiddenWorldBg != null) {
+            uiContainer.post { resetRevealState(uiContainer, hiddenWorldBg) }
+        }
     }
     
     private fun applySkin() {
@@ -569,61 +593,139 @@ class MainActivity : Activity(), LogCallback {
         }
     }
 
+    private fun showLockdownDialog() {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_system_lock)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(true) 
+        
+        val input = dialog.findViewById<EditText>(R.id.inputUnlockKey)
+        val btn = dialog.findViewById<Button>(R.id.btnUnlock)
+        
+        btn.setOnClickListener {
+            val key = input.text.toString()
+            if (key == "1379") {
+                // PERMANENT UNLOCK
+                val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+                prefs.edit()
+                    .putBoolean("permanent_unlock", true) // The Flag of Freedom
+                    .putInt("fatigue_count", 0)
+                    .apply()
+                
+                dialog.dismiss()
+                Toast.makeText(this, "SYSTEM ROOTED. LIMITS REMOVED FOREVER.", Toast.LENGTH_LONG).show()
+                playSfx(sfxComplete)
+            } else {
+                Toast.makeText(this, "ACCESS DENIED. KEY INVALID.", Toast.LENGTH_SHORT).show()
+                input.setText("")
+                playSfx(sfxAbort)
+            }
+        }
+        
+        dialog.show()
+        playSfx(sfxAbort) 
+    }
+
     private fun startTask() {
+        // -1. Check for Permanent Unlock (Awakened State)
+        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        val isPermanentlyUnlocked = prefs.getBoolean("permanent_unlock", false)
+        if (isPermanentlyUnlocked) {
+            // Bypass all limits
+            executeTaskLogic(prefs)
+            return
+        }
+
+        // 0. Lockdown Check with Auto-Unlock (Limited State)
+        var fatigueCount = prefs.getInt("fatigue_count", 0)
+        
+        // Threshold restored to 10
+        if (fatigueCount >= 10) {
+            val lockTime = prefs.getLong("lockdown_start_time", 0L)
+            val currentTime = System.currentTimeMillis()
+            
+            // 5 minutes = 300,000 ms
+            if (lockTime > 0 && (currentTime - lockTime > 300000)) {
+                // Auto-Unlock (Penalty: Reset count to 3)
+                fatigueCount = 3
+                prefs.edit()
+                    .putInt("fatigue_count", fatigueCount)
+                    .putLong("lockdown_start_time", 0L)
+                    .apply()
+                Toast.makeText(this, "System Cooled Down. Partial Functionality Restored.", Toast.LENGTH_LONG).show()
+            } else {
+                showLockdownDialog()
+                return
+            }
+        }
+    
         val task = taskInput.text.toString()
         if (task.isBlank()) {
             Toast.makeText(this, "Please input task", Toast.LENGTH_SHORT).show()
             return
         }
         
-        playSfx(sfxExecute) // 🔊 Play EXECUTE Sound
+        // Increment Fatigue
+        val newCount = fatigueCount + 1
+        val editor = prefs.edit()
+        editor.putInt("fatigue_count", newCount)
+        
+        if (newCount >= 10) {
+            // Lock
+            editor.putLong("lockdown_start_time", System.currentTimeMillis())
+        }
+        editor.apply()
+        
+        executeTaskLogic(prefs)
+    }
+
+    private fun executeTaskLogic(prefs: android.content.SharedPreferences) {
+        val task = taskInput.text.toString()
+        if (task.isBlank()) return // Should be checked before
+
+        playSfx(sfxExecute) 
 
         logText.text = ""
         isTaskRunning = true
-        updateStatus() // 更新按钮状态
-        startStarSignal() // 🌟 发射信号：三体星开始闪烁
+        updateStatus() 
+        startStarSignal() 
         
-        // 🌍 计数器逻辑移至此处 (每次执行任务 +1)
-        val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        // World Save Count (Skin Achievement)
         val saveCount = prefs.getInt("world_save_count", 0) + 1
         prefs.edit().putInt("world_save_count", saveCount).apply()
         
-        // Check for Skin Unlock (Threshold: 2)
         if (saveCount == 2) {
-            // UNLOCK & AUTO-APPLY
             prefs.edit().putString("app_skin", "red_coast").apply()
-            applySkin() // Immediate visual upgrade
-            // onLog("✨ SYSTEM UPGRADE: THE LAST CYBERPHONE LINK ESTABLISHED ✨") 
+            applySkin() 
             Toast.makeText(this, "New Skin Unlocked: The Last Cyberphone", Toast.LENGTH_LONG).show()
         }
         
-        // Read Config from SharedPreferences
         val apiKey = prefs.getString("api_key", "562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI")
         val baseUrl = prefs.getString("base_url", "https://open.bigmodel.cn/api/paas/v4/")
         val modelName = prefs.getString("model_name", "autoglm-phone")
+        val language = prefs.getString("app_language", "Chinese")
         
         Thread {
             try {
                 val py = Python.getInstance()
                 val module = py.getModule("agent_main")
                 
-                // onLog("🚀 Executing with Model: $modelName") // Optional: Log model usage
-                
-                module.callAttr("run_task", apiKey, baseUrl, modelName, task, this)
+                module.callAttr("run_task", apiKey, baseUrl, modelName, task, this, language)
                 
                 runOnUiThread {
                     isTaskRunning = false
-                    stopStarSignal() // 🌟 任务完成：信号切断
-                    playSfx(sfxComplete) // 🔊 Success Sound
-                    resetUI() // Strict Reset
-                    Toast.makeText(this, "Task completed", Toast.LENGTH_SHORT).show()
+                    stopStarSignal() 
+                    updateStatus()
+                    playSfx(sfxComplete) 
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 runOnUiThread {
-                    onLog("❌ 运行出错: ${e.message}")
+                    onLog("Error: ${e.message}")
                     isTaskRunning = false
                     stopStarSignal()
-                    resetUI() // Strict Reset
+                    updateStatus()
+                    playSfx(sfxAbort) 
                 }
             }
         }.start()

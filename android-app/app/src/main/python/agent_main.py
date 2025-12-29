@@ -51,10 +51,11 @@ SYSTEM_PROMPT = (
 )
 
 class SimplePhoneAgent:
-    def __init__(self, api_key, base_url, model_name):
+    def __init__(self, api_key, base_url, model_name, language="Chinese"):
         self.api_key = api_key
         self.base_url = base_url
         self.model_name = model_name
+        self.language = language
         
         # 配置 openai（旧版 SDK 0.28.1 的方式）
         openai.api_key = api_key
@@ -76,6 +77,8 @@ class SimplePhoneAgent:
         # AutoGLM-Phone-9B 使用 1000x1000 归一化坐标系
         self.model_width = 1000
         self.model_height = 1000
+
+
 
     def _scale_coordinates(self, x, y):
         """Scale coordinates from model reference (1000x1000) to device actual resolution"""
@@ -457,9 +460,9 @@ class SimplePhoneAgent:
 # 全局 agent 实例（供 Kotlin 调用停止函数）
 _current_agent = None
 
-def run_task(api_key, base_url, model_name, task, log_callback):
+def run_task(api_key, base_url, model_name, task, log_callback, language="Chinese"):
     global _current_agent
-    _current_agent = SimplePhoneAgent(api_key, base_url, model_name)
+    _current_agent = SimplePhoneAgent(api_key, base_url, model_name, language)
     _current_agent.run(task, log_callback)
     _current_agent = None  # 任务结束后清空
 
