@@ -217,6 +217,65 @@ class MainActivity : Activity(), LogCallback {
         sfxAbort = soundPool.load(this, R.raw.sfx_abort, 1)
         sfxComplete = soundPool.load(this, R.raw.sfx_complete, 1)
         sfxClick = soundPool.load(this, R.raw.sfx_click, 1)
+        
+        // --- Elastic Drag Logic for Hidden World ---
+        val uiContainer = findViewById<android.widget.FrameLayout>(R.id.uiContainer)
+        val hiddenWorldBg = findViewById<android.widget.ImageView>(R.id.hiddenWorldBg)
+        val dragTrigger = findViewById<android.view.View>(R.id.dragTrigger)
+        
+        // Init off-screen
+        uiContainer.post {
+            hiddenWorldBg.translationY = uiContainer.height.toFloat()
+        }
+        
+        dragTrigger.setOnTouchListener(object : android.view.View.OnTouchListener {
+             var startY = 0f
+             var isDragging = false
+             
+             override fun onTouch(v: android.view.View, event: android.view.MotionEvent): Boolean {
+                 when (event.action) {
+                     android.view.MotionEvent.ACTION_DOWN -> {
+                         startY = event.rawY
+                         isDragging = true
+                         return true
+                     }
+                     android.view.MotionEvent.ACTION_MOVE -> {
+                         if (!isDragging) return false
+                         val deltaY = event.rawY - startY
+                         val maxDrag = resources.displayMetrics.heightPixels * 0.8f // Allow deeper drag
+                         
+                         if (deltaY < 0) {
+                             val dampFactor = 0.6f // Less resistance to see more
+                             val targetY = deltaY * dampFactor
+                             
+                             if (kotlin.math.abs(targetY) < maxDrag) {
+                                uiContainer.translationY = targetY
+                                // Sync Image: Start from bottom (height), move up by targetY (negative)
+                                hiddenWorldBg.translationY = uiContainer.height.toFloat() + targetY
+                             }
+                         }
+                         return true
+                     }
+                     android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+                         isDragging = false
+                         // Spring back animation
+                         uiContainer.animate()
+                             .translationY(0f)
+                             .setDuration(500)
+                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                             .start()
+                             
+                         hiddenWorldBg.animate()
+                             .translationY(uiContainer.height.toFloat())
+                             .setDuration(500)
+                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                             .start()
+                         return true
+                     }
+                 }
+                 return false
+             }
+        })
     }
     
     // --- Doomsday List Features ---

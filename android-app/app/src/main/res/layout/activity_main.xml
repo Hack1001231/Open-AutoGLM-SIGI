@@ -1,262 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <!-- Background Image: Dynamic -->
-    <ImageView
-        android:id="@+id/backgroundImage"
+    <!-- Background color holder -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:background="#000000"/>
+
+    <!-- 2. The Surface Reality (Draggable Container) -->
+    <FrameLayout
+        android:id="@+id/uiContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:background="#000000" />
+        android:background="#000000"
+        android:clickable="true"
+        android:focusable="true">
 
+        <!-- Original Background Image: Dynamic -->
+        <ImageView
+            android:id="@+id/backgroundImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="#000000" />
 
-
-    <!-- Main Content Layer -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingStart="24dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="0dp">
-
+        <!-- Main Content Layer -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginBottom="24dp">
-            
-            <!-- Pixel Art Title Image (Animated via ClipDrawable) -->
-            <ImageView
-                android:id="@+id/titleImage"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:src="@drawable/title_sigillum_pixel"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
-                android:id="@+id/statusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <!-- Container for Top Labels -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <!-- Accessibility Settings Link - Just above input -->
-        <TextView
-            android:id="@+id/openSettingsButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="打开无障碍权限"
-            android:fontFamily="@font/vt323_regular"
-            android:textColor="@color/terminal_green"
-            android:textSize="12sp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:layout_marginBottom="4dp"
-            android:layout_weight="1" />
-
-        <!-- 2. Doomsday List Toggle (Parallel to Accessibility) -->
-        <TextView
-            android:id="@+id/btnDoomsdayList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DOOMSDAY LIST"
-            android:fontFamily="@font/vt323_regular"
-            android:textColor="@color/terminal_green"
-            android:textSize="12sp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:layout_marginBottom="4dp" />
-            
-        </LinearLayout> 
-        <!-- End of Label Row -->
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp">
-
-            <EditText
-                android:id="@+id/taskInput"
+            android:paddingStart="24dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="0dp">
+    
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/tech_input_border"
-                android:hint="> Input 'Thought Seal' Command..."
-                android:fontFamily="@font/vt323_regular"
-                android:textSize="18sp"
-                android:textColorHint="@color/terminal_green_dark"
-                android:textColor="@color/terminal_green"
-                android:inputType="textMultiLine"
-                android:minLines="3"
-                android:padding="16dp" />
-
-            <ImageView
-                android:id="@+id/clearInputButton"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="6dp"
-                android:layout_marginBottom="6dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_clear"
-                android:visibility="gone"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Clear text" />
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
                 
-            <!-- ADD TASK Button (+) -->
-            <ImageView
-                android:id="@+id/btnAddTask"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="bottom|start"
-                android:layout_marginStart="6dp"
-                android:layout_marginBottom="6dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_add_task"
-                android:visibility="gone"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Add to list" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
-
-            <Button
-                android:id="@+id/executeButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="12dp"
-                android:text="EXECUTE"
-                android:textSize="20sp"
-                android:fontFamily="@font/vt323_regular"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/tech_button_bg" />
-
-            <!-- The Red Button (Ye Wenjie's Button) -->
-            <Button
-                android:id="@+id/stopButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="ABORT"
-                android:textSize="20sp"
-                android:fontFamily="@font/vt323_regular"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/tech_button_stop_bg"
-                android:enabled="false" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="2dp">
-
+                <!-- Pixel Art Title Image (Animated via ClipDrawable) -->
+                <ImageView
+                    android:id="@+id/titleImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:src="@drawable/title_sigillum_pixel"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:visibility="visible"
+                    android:layout_gravity="center_horizontal" />
+    
+                <TextView
+                    android:id="@+id/statusText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+    
+            </LinearLayout>
+    
+            <!-- Container for Top Labels -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+    
+            <!-- Accessibility Settings Link - Just above input -->
             <TextView
-                android:id="@+id/logToggle"
+                android:id="@+id/openSettingsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="▼"
+                android:text="打开无障碍权限"
+                android:fontFamily="@font/vt323_regular"
+                android:textColor="@color/terminal_green"
                 android:textSize="12sp"
-                android:textColor="@color/terminal_green"
-                android:padding="4dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?android:attr/selectableItemBackground" />
-
-            <TextView
-                android:id="@+id/logLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="SYSTEM LOG"
-                android:letterSpacing="0.05"
-                android:fontFamily="@font/vt323_regular"
-                android:textSize="10sp"
-                android:textColor="@color/terminal_green" />
-
-            <TextView
-                android:id="@+id/copyLogButton"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:text="COPY"
-                android:gravity="center"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:textColor="@color/terminal_green"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?android:attr/selectableItemBackground"
-                android:fontFamily="@font/vt323_regular"
-                android:textSize="10sp" />
-        </LinearLayout>
-
-        <!-- Log Area with Rounded Background -->
-        <ScrollView
-            android:id="@+id/logScroll"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_log_bg"
-            android:padding="12dp"
-            android:layout_marginBottom="80dp"
-            android:visibility="visible"> 
-
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1" />
+    
+            <!-- 2. Doomsday List Toggle (Parallel to Accessibility) -->
             <TextView
-                android:id="@+id/logText"
+                android:id="@+id/btnDoomsdayList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DOOMSDAY LIST"
+                android:fontFamily="@font/vt323_regular"
+                android:textColor="@color/terminal_green"
+                android:textSize="12sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="4dp" />
+                
+            </LinearLayout> 
+            <!-- End of Label Row -->
+    
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/terminal_green"
-                android:fontFamily="@font/vt323_regular"
-                android:textSize="12sp"
-                android:lineSpacingMultiplier="1.2"
-                android:text=">_ Waiting for signal...\n" />
-        </ScrollView>
+                android:layout_marginBottom="24dp">
+    
+                <EditText
+                    android:id="@+id/taskInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tech_input_border"
+                    android:hint="> Input 'Thought Seal' Command..."
+                    android:fontFamily="@font/vt323_regular"
+                    android:textSize="18sp"
+                    android:textColorHint="@color/terminal_green_dark"
+                    android:textColor="@color/terminal_green"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"
+                    android:padding="16dp" />
+    
+                <ImageView
+                    android:id="@+id/clearInputButton"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_clear"
+                    android:visibility="gone"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Clear text" />
+                    
+                <!-- ADD TASK Button (+) -->
+                <ImageView
+                    android:id="@+id/btnAddTask"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_add_task"
+                    android:visibility="gone"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Add to list" />
+            </FrameLayout>
+    
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+    
+                <Button
+                    android:id="@+id/executeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="12dp"
+                    android:text="EXECUTE"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/vt323_regular"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/tech_button_bg" />
+    
+                <!-- The Red Button (Ye Wenjie's Button) -->
+                <Button
+                    android:id="@+id/stopButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:text="ABORT"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/vt323_regular"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/tech_button_stop_bg"
+                    android:enabled="false" />
+            </LinearLayout>
+    
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="2dp">
+    
+                <TextView
+                    android:id="@+id/logToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="12sp"
+                    android:textColor="@color/terminal_green"
+                    android:padding="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackground" />
+    
+                <TextView
+                    android:id="@+id/logLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="SYSTEM LOG"
+                    android:letterSpacing="0.05"
+                    android:fontFamily="@font/vt323_regular"
+                    android:textSize="10sp"
+                    android:textColor="@color/terminal_green" />
+    
+                <TextView
+                    android:id="@+id/copyLogButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:text="COPY"
+                    android:gravity="center"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/terminal_green"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:fontFamily="@font/vt323_regular"
+                    android:textSize="10sp" />
+            </LinearLayout>
+    
+            <!-- Log Area with Rounded Background -->
+            <ScrollView
+                android:id="@+id/logScroll"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_log_bg"
+                android:padding="12dp"
+                android:layout_marginBottom="40dp"
+                android:visibility="visible"> 
+    
+                <TextView
+                    android:id="@+id/logText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/terminal_green"
+                    android:fontFamily="@font/vt323_regular"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:text=">_ Waiting for signal...\n" />
+            </ScrollView>
+    
+        </LinearLayout>
+    
+        <!-- Settings Button (Top Right Gear) -->
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_settings"
+            android:padding="8dp" />
+    
+        <!-- The Sparkling Star -->
+        <ImageView
+            android:id="@+id/sparklingStar"
+            android:layout_width="5dp"  
+            android:layout_height="5dp"
+            android:src="@drawable/star_shape"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="40dp"
+            android:alpha="0" />
 
-    </LinearLayout>
-
-    <!-- Settings Button (Top Right Gear) -->
-    <ImageButton
-        android:id="@+id/settingsButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_settings"
-        android:padding="8dp" />
-
-    <!-- The Sparkling Star - Moved to bottom to render ON TOP -->
+        <!-- Reveal Handle (Bottom) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="▲"
+            android:textColor="#5500E676"
+            android:textSize="18sp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.6" />
+            
+        <!-- Drag Trigger Area (Transparent) -->
+        <View
+            android:id="@+id/dragTrigger"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:background="#00000000"
+            android:clickable="true"
+            android:focusable="true" />
+            
+    </FrameLayout>
+    
+    <!-- 3. The Hidden World (Now on TOP but verifying translate off-screen) -->
+    <!-- It follows the drag from bottom -->
     <ImageView
-        android:id="@+id/sparklingStar"
-        android:layout_width="5dp"  
-        android:layout_height="5dp"
-        android:src="@drawable/star_shape"
-        android:layout_gravity="top|start"
-        android:layout_marginTop="50dp"
-        android:layout_marginStart="40dp"
-        android:alpha="0" />
-
+        android:id="@+id/hiddenWorldBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_memory_field"
+        android:alpha="1.0" />
+        
 </FrameLayout>

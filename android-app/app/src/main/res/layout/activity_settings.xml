@@ -4,210 +4,252 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <!-- Background Image: Three Body Planet -->
+    <!-- 2. The Surface Reality (Draggable) -->
+    <FrameLayout
+        android:id="@+id/uiContainerSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Original Background: Red Coast Base (Ruins) -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/settings_bg_trisolaris"
+            android:alpha="0.8" />
+            
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_back"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:padding="12dp" />
+    
+        <!-- The Sparkling Star (Settings Variant) -->
+        <ImageView
+            android:id="@+id/settingsStar"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:src="@drawable/star_shape"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="32dp"
+            android:alpha="0.8" />
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="24dp">
+    
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIGURATION"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="56dp" />
+    
+            <!-- Service Provider -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Service Provider"
+                android:textColor="#90A4AE"
+                android:textSize="10sp"
+                android:layout_marginBottom="2dp" />
+    
+            <Spinner
+                android:id="@+id/providerSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@drawable/tech_input_border"
+                android:padding="0dp"
+                android:layout_marginBottom="12dp"
+                android:spinnerMode="dropdown" />
+    
+            <!-- Base URL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Base URL"
+                android:textColor="#90A4AE"
+                android:textSize="10sp"
+                android:layout_marginBottom="2dp" />
+    
+            <EditText
+                android:id="@+id/editBaseUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tech_input_border"
+                android:textColor="#FFFFFF"
+                android:padding="10dp"
+                android:text="https://open.bigmodel.cn/api/paas/v4/"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:layout_marginBottom="12dp" />
+    
+            <!-- API Key -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="API Key"
+                android:textColor="#90A4AE"
+                android:textSize="10sp"
+                android:layout_marginBottom="2dp" />
+    
+            <EditText
+                android:id="@+id/editApiKey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tech_input_border"
+                android:textColor="#FFFFFF"
+                android:padding="10dp"
+                android:text="562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:inputType="textPassword" 
+                android:layout_marginBottom="12dp" />
+    
+            <!-- Model Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Model Name"
+                android:textColor="#90A4AE"
+                android:textSize="10sp"
+                android:layout_marginBottom="2dp" />
+    
+            <EditText
+                android:id="@+id/editModelName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tech_input_border"
+                android:textColor="#FFFFFF"
+                android:padding="10dp"
+                android:text="autoglm-phone"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:layout_marginBottom="24dp" />
+    
+            <!-- Skin / Theme Selector -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Neural Interface Skin"
+                android:textColor="#90A4AE"
+                android:textSize="10sp"
+                android:layout_marginBottom="2dp" />
+    
+            <Spinner
+                android:id="@+id/skinSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tech_input_border"
+                android:padding="2dp"
+                android:minHeight="40dp"
+                android:layout_marginBottom="24dp"
+                android:spinnerMode="dropdown" />
+    
+            <!-- Sound Effects Selector -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BACKGROUND MUSIC"
+                android:textColor="#90A4AE"
+                android:textSize="10sp"
+                android:layout_marginBottom="2dp" />
+    
+            <Spinner
+                android:id="@+id/sfxSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tech_input_border"
+                android:padding="2dp"
+                android:minHeight="40dp"
+                android:layout_marginBottom="24dp"
+                android:spinnerMode="dropdown" />
+                
+            <!-- Filler Space -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+    
+            <!-- Footer: World Save Counter (Digital Plate Style) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="36dp">
+    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="I HAVE SAVED THE WORLD"
+                    android:fontFamily="@font/vt323_regular"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:layout_marginEnd="8dp" />
+    
+                <TextView
+                    android:id="@+id/worldSaveCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_counter_plate"
+                    android:text="00"
+                    android:fontFamily="@font/vt323_regular"
+                    android:textColor="#00E676"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:minWidth="32dp" />
+                    
+            </LinearLayout>
+    
+        </LinearLayout>
+        
+        <!-- Reveal Handle (Bottom) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="▲"
+            android:textColor="#5500E676"
+            android:textSize="18sp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.6" />
+            
+        <!-- Drag Trigger Area (Transparent) -->
+        <View
+            android:id="@+id/dragTriggerSettings"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:background="#00000000"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </FrameLayout>
+    
+    <!-- 1. The HIDDEN WORLD (Alien Trisolaris City - The Truth) -->
+    <!-- Positioned at Z-top, but logically below screen initially -->
     <ImageView
+        android:id="@+id/hiddenWorldBgSettings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/settings_bg_trisolaris"
-        android:alpha="0.8" />
+        android:src="@drawable/bg_trisolaris_city" />
         
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_back"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:padding="12dp" />
-
-    <!-- The Sparkling Star (Settings Variant) -->
-    <ImageView
-        android:id="@+id/settingsStar"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:src="@drawable/star_shape"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="32dp"
-        android:alpha="0.8" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="24dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CONFIGURATION"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:letterSpacing="0.1"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="12dp" />
-
-        <!-- Service Provider -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Service Provider"
-            android:textColor="#90A4AE"
-            android:textSize="10sp"
-            android:layout_marginBottom="2dp" />
-
-        <Spinner
-            android:id="@+id/providerSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:background="@drawable/tech_input_border"
-            android:padding="0dp"
-            android:layout_marginBottom="12dp"
-            android:spinnerMode="dropdown" />
-
-        <!-- Base URL -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Base URL"
-            android:textColor="#90A4AE"
-            android:textSize="10sp"
-            android:layout_marginBottom="2dp" />
-
-        <EditText
-            android:id="@+id/editBaseUrl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/tech_input_border"
-            android:textColor="#FFFFFF"
-            android:padding="10dp"
-            android:text="https://open.bigmodel.cn/api/paas/v4/"
-            android:textSize="12sp"
-            android:singleLine="true"
-            android:layout_marginBottom="12dp" />
-
-        <!-- API Key -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="API Key"
-            android:textColor="#90A4AE"
-            android:textSize="10sp"
-            android:layout_marginBottom="2dp" />
-
-        <EditText
-            android:id="@+id/editApiKey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/tech_input_border"
-            android:textColor="#FFFFFF"
-            android:padding="10dp"
-            android:text="562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI"
-            android:textSize="12sp"
-            android:singleLine="true"
-            android:inputType="textPassword" 
-            android:layout_marginBottom="12dp" />
-
-        <!-- Model Name -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Model Name"
-            android:textColor="#90A4AE"
-            android:textSize="10sp"
-            android:layout_marginBottom="2dp" />
-
-        <EditText
-            android:id="@+id/editModelName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/tech_input_border"
-            android:textColor="#FFFFFF"
-            android:padding="10dp"
-            android:text="autoglm-phone"
-            android:textSize="12sp"
-            android:singleLine="true"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Skin / Theme Selector -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Neural Interface Skin"
-            android:textColor="#90A4AE"
-            android:textSize="10sp"
-            android:layout_marginBottom="2dp" />
-
-        <Spinner
-            android:id="@+id/skinSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/tech_input_border"
-            android:padding="2dp"
-            android:minHeight="40dp"
-            android:layout_marginBottom="24dp"
-            android:spinnerMode="dropdown" />
-
-        <!-- Sound Effects Selector -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BACKGROUND MUSIC"
-            android:textColor="#90A4AE"
-            android:textSize="10sp"
-            android:layout_marginBottom="2dp" />
-
-        <Spinner
-            android:id="@+id/sfxSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/tech_input_border"
-            android:padding="2dp"
-            android:minHeight="40dp"
-            android:layout_marginBottom="24dp"
-            android:spinnerMode="dropdown" />
-            
-        <!-- Filler Space -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <!-- Footer: World Save Counter (Digital Plate Style) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="36dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I HAVE SAVED THE WORLD"
-                android:fontFamily="@font/vt323_regular"
-                android:textColor="#88FFFFFF"
-                android:textSize="12sp"
-                android:letterSpacing="0.1"
-                android:layout_marginEnd="8dp" />
-
-            <TextView
-                android:id="@+id/worldSaveCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_counter_plate"
-                android:text="00"
-                android:fontFamily="@font/vt323_regular"
-                android:textColor="#00E676"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:minWidth="32dp" />
-                
-        </LinearLayout>
-
-    </LinearLayout>
 </FrameLayout>

@@ -62,27 +62,86 @@ class SettingsActivity : Activity() {
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, providers)
         providerSpinner.adapter = adapter
         
-        // Handle User Interaction (Spinner Selection)
-        // We use a flag to prevent overwriting custom settings during initial load
-        providerSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
-                 val selectedProvider = providers[position]
-                 
-                 // Strict Binding: Always force update fields on selection
-                 if (selectedProvider == "ZhipuAI") {
-                     editBaseUrl.setText(ZHIPU_URL)
-                     editApiKey.setText(ZHIPU_KEY)
-                     editModelName.setText(ZHIPU_MODEL)
-                 } else if (selectedProvider == "ModelScope") {
-                     editBaseUrl.setText(MS_URL)
-                     editApiKey.setText(MS_KEY)
-                     editModelName.setText(MS_MODEL)
-                 }
-                // Auto-save logic handles text updates
-             }
-
-             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        
+         // Handle User Interaction (Spinner Selection)
+         // We use a flag to prevent overwriting custom settings during initial load
+         providerSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+              override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+                  val selectedProvider = providers[position]
+                  
+                  // Strict Binding: Always force update fields on selection
+                  if (selectedProvider == "ZhipuAI") {
+                      editBaseUrl.setText(ZHIPU_URL)
+                      editApiKey.setText(ZHIPU_KEY)
+                      editModelName.setText(ZHIPU_MODEL)
+                  } else if (selectedProvider == "ModelScope") {
+                      editBaseUrl.setText(MS_URL)
+                      editApiKey.setText(MS_KEY)
+                      editModelName.setText(MS_MODEL)
+                  }
+                 // Auto-save logic handles text updates
+              }
+ 
+              override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+         }
+         
+         // --- Elastic Drag Logic for Hidden World (Settings) ---
+        val uiContainer = findViewById<android.widget.FrameLayout>(R.id.uiContainerSettings)
+        val hiddenWorldBgSettings = findViewById<android.widget.ImageView>(R.id.hiddenWorldBgSettings)
+        val dragTrigger = findViewById<android.view.View>(R.id.dragTriggerSettings)
+        
+        // Init off-screen
+        uiContainer.post {
+            hiddenWorldBgSettings.translationY = uiContainer.height.toFloat()
         }
+        
+        dragTrigger.setOnTouchListener(object : android.view.View.OnTouchListener {
+             var startY = 0f
+             var isDragging = false
+             
+             override fun onTouch(v: android.view.View, event: android.view.MotionEvent): Boolean {
+                 when (event.action) {
+                     android.view.MotionEvent.ACTION_DOWN -> {
+                         startY = event.rawY
+                         isDragging = true
+                         return true
+                     }
+                     android.view.MotionEvent.ACTION_MOVE -> {
+                         if (!isDragging) return false
+                         val deltaY = event.rawY - startY
+                         val maxDrag = resources.displayMetrics.heightPixels * 0.8f
+                         
+                         if (deltaY < 0) {
+                             val dampFactor = 0.6f
+                             val targetY = deltaY * dampFactor
+                             
+                             if (kotlin.math.abs(targetY) < maxDrag) {
+                                uiContainer.translationY = targetY
+                                hiddenWorldBgSettings.translationY = uiContainer.height.toFloat() + targetY
+                             }
+                         }
+                         return true
+                     }
+                     android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+                         isDragging = false
+                         // Spring back animation
+                         uiContainer.animate()
+                             .translationY(0f)
+                             .setDuration(500)
+                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                             .start()
+                             
+                         hiddenWorldBgSettings.animate()
+                             .translationY(uiContainer.height.toFloat())
+                             .setDuration(500)
+                             .setInterpolator(android.view.animation.OvershootInterpolator(0.8f))
+                             .start()
+                         return true
+                     }
+                 }
+                 return false
+             }
+        })
     }
     
     private fun setupAutoSave() {
