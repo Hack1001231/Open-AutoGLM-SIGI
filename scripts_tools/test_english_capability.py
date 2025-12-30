@@ -3,7 +3,7 @@ import openai
 import base64
 
 # Config (User's Key)
-API_KEY = "562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI"
+API_KEY = "YOUR_API_KEY_HERE"
 BASE_URL = "https://open.bigmodel.cn/api/paas/v4/"
 MODEL = "autoglm-phone" # This maps to GLM-4V-9B
 

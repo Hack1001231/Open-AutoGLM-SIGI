@@ -3,107 +3,163 @@
 </p>
 
 # AutoGLM-SIGI: 最后的赛博终端 (The Last Cyberphone)
-> **一个伪装成手机终端的“现实黑客”装置。**
-> **A "Reality Hacking" Device Disguised as a Mobile Terminal.**
+
+> **"This is the way the world ends. Not with a bang but a whimper."**
+> **"世界就这样结束了，不是一声巨响，而是一声呜咽。"**
+> — *T.S. Eliot, The Hollow Men*
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
-[![Philosophy](https://img.shields.io/badge/philosophy-Accelerationism-red.svg)](#philosophy)
+[![Vibe](https://img.shields.io/badge/Vibe-Coding-purple.svg)](#creator)
 
 ---
 
-## 01. 入口 (The Entrance)
+## 🇨🇳 中文介绍
 
-**SIGI** (Sigillum Mentis) 不仅仅是一个 AI 助手，它是一场 **“操控现实的剧本杀” (Reality Script Kill)**。
+### 01. 秒变 AI 手机
 
-在这个剧本里，你不再是手机的奴隶，而是驾驶员。我们将复杂的数字世界简化为两个物理按钮——就像《黑客帝国》里的红蓝药丸，或者密室逃脱里的最终开关。
+**无需花一万块去炒作"豆包手机"或"Rabbit R1"。SIGI 让你的旧 Android 瞬间变身顶配 AI 终端。**
 
-*   🔴 **ACCELERATE (加速)**：按下它，名为 **AutoGLM** 的 AI 幽灵将接管你的屏幕。它会像看着乐谱一样阅读你的 APP，以 16 倍于人类的速度执行枯燥的任务。
-*   🟢 **ABORT (终止)**：这是你的逃生通道。当 AI 陷入疯狂或你只想夺回控制权时，拍下这个按钮，切断连接，从赛博空间弹射逃生。
+*   **0 成本**: 只要你有手机，安装即用。
+*   **0 门槛**: 告别电脑、告别 Termux 命令行。一键安装 `.apk`，秒变 LAM (Large Action Model) 智能体。
+*   **全自动**: 它是你的数字替身。看着它在屏幕上自动点击、滑动、输入——就像幽灵在操作。
 
-> **SIGI** is not just an AI assistant; it is a **"Reality Script Kill"**.
-> 
-> In this narrative, you are the pilot. We simplify the digital chaos into two physical buttons—like the Red/Blue pill in *The Matrix* or the final switch in an Escape Room.
-> 
-> *   🔴 **ACCELERATE**: The **AutoGLM** ghost takes the wheel, executing tasks at 16x human speed.
-> *   🟢 **ABORT**: Your eject button from Cyberspace.
+### 02. 叙事 UI 与思想实验
 
----
+我们不是在做工具，我们是在做 **"叙事型界面" (Narrative UI)**。
 
-## 02. 架构革命 (Architecture Revolution)
+**SIGILLUM MENTIS** 是拉丁语“思想钢印”(Seal of the Mind) 的意思。在这个信息过载的时代，我们希望留下属于思想的印记。
 
-SIGI 并非凭空诞生。它是对传统开源架构（Termux + Python）的一次彻底 **重构与进化**。
+SIGI 的灵感源自 **《三体》 (The Three-Body Problem)** 与 **古典赛博朋克 (Classic Cyberpunk)**。它不仅是个 APP，更是一场 **"现实剧本杀" (Reality Script Kill)**。
 
-我们抛弃了臃肿的 "Termux 外挂" 方案，采用 **Chaquopy** 技术将 Python 智能体直接植入 Android 核心进程，创造了 **单进程混合架构 (Single-Process Hybrid Architecture)**。
+*   **生存还是毁灭?**
+    *   🔴 **ACCELERATE (加速)**：代表有效加速主义。交出控制权，让 AI 代理全速接管你的人生。
+    *   🟢 **ABORT (终止)**：代表人类的最后反抗。切断连接，从机器手中夺回控制权。
 
-> SIGI is a complete evolution from the traditional "Termux" approach. We embedded the Python Agent directly into the Android core via **Chaquopy**, creating a **Single-Process Hybrid Architecture**.
+*   **最后防线 / 质子封锁**:
+    每一次任务执行都是向宇宙广播信号。当系统过载，"质子封锁" (Proton Lockdown) 警报将以此响起，你需要在 3 分钟内像玩密室逃脱一样解开谜题，否则将被踢出赛博空间。
 
-```mermaid
-graph TD
-    subgraph "Legacy Architecture (Old)"
-        Termux[Termux App] <-->|network ~50ms| Server[Helper App]
-    end
-    
-    subgraph "SIGI Architecture (New)"
-        Native[Kotlin UI] <-->|memory ~3ms| PyEnv[Python Agent]
-    end
-```
+### 03. 交互哲学：情绪消费
 
-### 核心进化数据 (Evolution Metrics):
-*   🚀 **速度 (Speed)**: 通信延迟从 **50ms** 降至 **3ms** (进程内直通)，提升 **16 倍**。
-*   💾 **轻量 (Lightweight)**: 内存占用降低 **47%** (150MB -> 80MB)。
-*   🛡️ **稳定 (Stability)**: 彻底解决了双进程保活难题，拒绝后台被杀。
-*   🔧 **部署 (Deployment)**: 从复杂的 **12 步** 命令行操作缩减为 **3 步** 傻瓜式安装。
+我们拒绝冷冰冰的工具属性。**得情绪者得用户。**
 
----
+我们预测 AI 产品将由功能主导进入 **情绪消费 (Emotional Consumption)** 主导的时代。SIGI 提供的是一种"心情消费"的空间——在这里，手机不再只是工具，而是你情绪的容器。
 
-## 03. 交互哲学：情绪消费 (UI/UX Philosophy)
+#### 01. 末日清单
+我们将叙事植入到了最基础的指令列表中。每一条预设指令，都是一个微小的故事片段，关于爱、离别、生存与欲望：
+*   *"Oh, darling，打开微博，发一条：再见爱人"*
+*   *"忍冬将至，去买2份香辣鸡翅"*
+*   *"打开携程...我不想死家里呀"*
 
-我们拒绝冷冰冰的工具属性。SIGI 的 UI 设计融合了 **科幻小说、密室游戏与沉浸式戏剧** 的元素。
-
-### 01. 密室美学 (Escape Room Aesthetic)
+#### 02. 密室美学
 *   **氛围**: 界面采用 `终端绿 (#00E676)` 搭配 `深空黑 (#0A1929)`，模拟冷战时期的秘密终端。
-*   **隐喻**: 设置页面的下拉手势是一个“暗门”。就像在密室里寻找机关一样，只有向下拉动，才能看到隐藏在表象之下的“三体/水滴”真相。
+*   **隐喻**: 设置页面的交互是一个“暗门”。就像在密室里寻找机关一样，你需要在页面里寻找密钥线索，才能看到隐藏在表象之下的“高维”真相。
 
-### 02. 生存游戏 (Gamification of Survival)
-*   **质子封锁 (Proton Lockdown)**: 当系统检测到高维负载时，会触发红色的“封锁警报”。你需要在 **3分钟** 内完成解谜（输入 `XXXX`），否则将被强制踢出赛博空间。
-*   **拯救计数器**: 每一次按下 ABORT，不仅仅是停止程序，更是一次“拯救世界”的演习。系统会记录你拯救人类的次数，作为你作为驾驶员的勋章。
+### 04. 架构革命
 
----
+我们对开源的 Open-AutoGLM 进行了 **降维打击** 级别的重构。
 
-## 04. 安装指南 (Installation)
+*   **Old Way (竞品)**: 需要电脑 + Termux + Python环境 + 复杂的双进程通信。此时你的手机发烫、卡顿、容易崩溃。
+*   **SIGI Way (本方案)**: **单进程混合架构 (Single-Process Hybrid)**。Python 智能体直接植入 Android 核心。
 
-### 用户通道 (一键部署)
-> **For Users (Zero-Code Method)**
+| 特性 (Feature) | 传统方案 (Legacy) | SIGI (Next-Gen) |
+| :--- | :--- | :--- |
+| **部署难度** | 🛑 极难 (需 Termux/命令行) | ✅ **极简 (一键安装 APK)** |
+| **响应速度** | 🐢 慢 (~500ms 延迟) | ⚡ **光速 (~3ms 进程内直通)** |
+| **无需电脑** | ❌ 必须连接电脑配置 | ✅ **完全脱离电脑运行** |
+| **体验** | 📟 枯燥的命令行 | 🎮 **沉浸式赛博游戏体验** |
 
-1.  下载 **SIGI 部署包** (所有依赖已打包，无需配置环境)。
-2.  手机开启 **USB 调试**。
-3.  运行 `一键安装(双击我).bat`。
-4.  拔线，进入赛博空间。
+### 05. 创作者介绍
 
-### 开发者通道 (源码编译)
-> **For Developers**
+**SIGI 由 Yanqiao ([微博 @颜桥](https://weibo.com/n/颜桥)) 创作。**
 
-```bash
-git clone https://github.com/ToTheMoon/Open-AutoGLM-SIGI.git
-cd Open-AutoGLM-SIGI/android-app
-./gradlew assembleDebug
-```
+我不是一个传统的"码农"，我是一名 **Storyteller (叙事者)** 与 **Creative Strategist (创意策略)**。
 
----
+*   **背景**: **985 计算机类专业** + 跨学科多重知识背景。
+*   **身份**: **小说家**。作品见于《收获》《人民文学》《十月》等顶级刊物。
+*   **商业**: 原创故事曾被《唐人街探案》制作人及湖南卫视高价收购。
+*   **跨界**: 曾为 **惠普 (HP)、克莱斯勒、LV、Burberry** 等顶级品牌提供创意策略支持。
 
-## 05. 创作者与哲学 (Creator & Philosophy)
+> **"AI 时代，技术不再是壁垒。创意人员凭借 Vibe Coding，将把更新鲜的创意与想法，转化为具体有形的产品，我们用创意细节点亮你的产品。"**
 
-**SIGI** (Sigillum Mentis) 由 **Yanqiao** (颜桥) 创作。
+### 06. 安装与加入
 
-*   **背景**: 985 CS 计算机科班 + 跨学科双学位背景。
-*   **身份**: 创意总监，小说家，Vibe Coding 倡导者。
-*   **作品**: 原创故事曾被《唐人街探案》剧组、湖南卫视等知名机构收购。
-
-> *"希望用 AI 创意‘点亮’你的生活。"*
->
-> *"I hope to 'light up' your life with AI creativity."*
+1.  下载 **SIGI 部署包**。
+2.  运行 `一键安装.bat` (仅第一次需要)。
+3.  **拔线，起飞。**
 
 ---
 
-*“We are all insects in the gutter, but some of us are looking at the stars.”*
+## 🇺🇸 English Introduction
+
+### 01. Zero-Cost AI Phone
+
+**Stop paying $10,000 for hyping AI hardware. SIGI transforms your old Android into a top-tier AI terminal instantly.**
+
+*   **Zero Cost**: Free to use if you have an Android phone.
+*   **Zero Barrier**: No PC required, no Termux CLI. One-click install `.apk`, instantly becoming a LAM (Large Action Model) agent.
+*   **Fully Auto**: It's your digital avatar. Watch it tap, swipe, and type like a ghost on your screen.
+
+### 02. Narrative UI & Thought Experiment
+
+We are not building a tool; we are building a **"Narrative UI"**.
+
+**SIGILLUM MENTIS** is Latin for "Seal of the Mind" (Thought Stamp). In this era of information overload, we aim to imprint the mark of thought.
+
+SIGI is inspired by **"The Three-Body Problem"** and **Classic Cyberpunk aesthetics**. It is not just an app, but a **"Reality Script Kill" (Immersive Mystery Game)**.
+
+*   **Survival or Destruction?**
+    *   🔴 **ACCELERATE**: Represents effective accelerationism. Hand over control and let the AI agent take over your life at full speed.
+    *   🟢 **ABORT**: Represents humanity's last stand. Cut the connection and reclaim control from the machine.
+
+*   **The Last Line of Defense / Proton Lockdown**:
+    Every task execution broadcasts a signal to the universe. When the system overloads, the "Proton Lockdown" alarm will sound, and you will need to solve a puzzle within 3 minutes, like in an escape room, or be kicked out of cyberspace.
+
+### 03. Interaction Philosophy: Emotional Consumption
+
+We reject cold, utilitarian tools. **"He who captures emotions, captures the user."**
+
+We predict that AI products will shift from function-driven to an era dominated by **Emotional Consumption**. SIGI provides a space for "mood consumption"—here, your phone is no longer just a tool, but a vessel for your emotions.
+
+#### 01. The Doomsday Protocols
+We embedded narratives into the most basic command list. Each preset command is a micro-story fragment about love, parting, survival, and desire:
+*   *"Oh, darling, open Weibo and post: Goodbye, my love"*
+*   *"Winter is coming, buy 2 portions of spicy chicken wings"*
+*   *"Open Trip.com... I don't want to die at home"*
+
+#### 02. Escape Room Aesthetic
+*   **Atmosphere**: The interface uses `Terminal Green (#00E676)` paired with `Deep Space Black (#0A1929)`, simulating a secret terminal from the Cold War era.
+*   **Metaphor**: The interaction on the settings page is a "secret door." Just like finding a mechanism in an escape room, you need to find clues for the key within the page to reveal the "Higher Dimensional" truth hidden beneath the surface.
+
+### 04. Architecture Revolution
+
+We refactored the open-source Open-AutoGLM with a **"Dimensional Strike"** level of reconstruction.
+
+*   **Old Way (Competitors)**: Requires a PC + Termux + Python environment + complex dual-process communication. Your phone would overheat, lag, and crash easily.
+*   **SIGI Way (This Solution)**: **Single-Process Hybrid Architecture**. The Python agent is directly embedded into the Android core.
+
+| Feature | Legacy Way | SIGI (Next-Gen) |
+| :--- | :--- | :--- |
+| **Deployment Difficulty** | 🛑 Extremely Hard (Requires Termux/CLI) | ✅ **Extremely Simple (One-click APK install)** |
+| **Response Speed** | 🐢 Slow (~500ms latency) | ⚡ **Light Speed (~3ms in-process direct)** |
+| **No PC Required** | ❌ Must connect to PC for configuration | ✅ **Runs completely without a PC** |
+| **Experience** | 📟 Dry command line | 🎮 **Immersive Cyberpunk gaming experience** |
+
+### 05. The Creator
+
+**SIGI is created by Yanqiao ([Weibo @颜桥](https://weibo.com/n/颜桥)).**
+
+I am not a traditional "coder"; I am a **Storyteller** and **Creative Strategist**.
+
+*   **Background**: **Top-tier CS Degree (985)** + multidisciplinary knowledge background.
+*   **Identity**: **Novelist**. Works published in top literary journals such as *Harvest*, *People's Literature*, and *October*.
+*   **Commercial**: Original stories were acquired by the producers of *Detective Chinatown* and Hunan Broadcasting System for high value.
+*   **Crossover**: Provided creative strategy support for top brands like **HP, Chrysler, LV, and Burberry**.
+
+> **"In the AI era, technology is no longer a barrier. Creative minds, empowered by Vibe Coding, will transform fresh ideas into tangible products. We light up your product with creative details."**
+
+### 06. Install & Join
+
+1.  Download the **SIGI Deployment Pack**.
+2.  Run `一键安装.bat` (First time only).
+3.  **Unplug, and Accelerate.**

@@ -3,7 +3,7 @@ import openai
 from datetime import datetime
 
 # Config
-API_KEY = "562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI"
+API_KEY = "YOUR_API_KEY_HERE"
 BASE_URL = "https://open.bigmodel.cn/api/paas/v4/"
 MODEL = "autoglm-phone"
 

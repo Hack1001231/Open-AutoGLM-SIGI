@@ -25,11 +25,11 @@ class SettingsActivity : Activity() {
 
     // Default Configurations
     private val ZHIPU_URL = "https://open.bigmodel.cn/api/paas/v4"
-    private val ZHIPU_KEY = "562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI"
+    private val ZHIPU_KEY = ""
     private val ZHIPU_MODEL = "autoglm-phone"
 
     private val MS_URL = "https://api-inference.modelscope.cn/v1"
-    private val MS_KEY = "ms-9785cb73-b979-45c9-a31f-ec1e26463fc0"
+    private val MS_KEY = ""
     private val MS_MODEL = "ZhipuAI/AutoGLM-Phone-9B"
     
     // private var isInitialLoad = true // Removed strict binding check requirement
@@ -58,28 +58,21 @@ class SettingsActivity : Activity() {
 
         // Radio Button Toggle Logic
         // Initialize Spinner Adapter
-        val providers = arrayOf("ZhipuAI", "ModelScope")
+        // Initialize Spinner Adapter (Simplified: Only ZhipuAI)
+        val providers = arrayOf("ZhipuAI (Official)")
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, providers)
         providerSpinner.adapter = adapter
         
-        
          // Handle User Interaction (Spinner Selection)
-         // We use a flag to prevent overwriting custom settings during initial load
          providerSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
               override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
-                  val selectedProvider = providers[position]
-                  
-                  // Strict Binding: Always force update fields on selection
-                  if (selectedProvider == "ZhipuAI") {
-                      editBaseUrl.setText(ZHIPU_URL)
+                  // Only one provider, so always Zhipu logic
+                  editBaseUrl.setText(ZHIPU_URL)
+                  editModelName.setText(ZHIPU_MODEL)
+                  // Smart Preserve: Don't wipe user's key
+                  if (ZHIPU_KEY.isNotEmpty() || editApiKey.text.toString().isEmpty()) {
                       editApiKey.setText(ZHIPU_KEY)
-                      editModelName.setText(ZHIPU_MODEL)
-                  } else if (selectedProvider == "ModelScope") {
-                      editBaseUrl.setText(MS_URL)
-                      editApiKey.setText(MS_KEY)
-                      editModelName.setText(MS_MODEL)
                   }
-                 // Auto-save logic handles text updates
               }
  
               override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}

@@ -298,12 +298,13 @@ class MainActivity : Activity(), LogCallback {
     // --- Doomsday List Features ---
     
     private val DEFAULT_PROTOCOLS = listOf(
-        "打开微信，给微信里的好友某某，发一条短信：你好吗",
-        "打开淘宝，查看已购商品里的水龙头",
-        "打开12306，查找12月30日，北京去上海的火车票",
-        "打开微博，发一条：世界你好",
-        "打开美团，去附近最近的肯德基，买一份香辣鸡腿堡",
-        "打开网易云音乐，搜周杰伦的歌曲"
+        "Oh, darling，打开微博，发一条：再见爱人",
+        "忍冬将至，打开美团，去附近的肯德基，买2份香辣鸡翅",
+        "打开12306，查询明天北京去上海的高铁票，还有木有呀",
+        "打开淘宝，查看她妈的已购商品里的西洋参，该补补了",
+        "打开微信，给微信里的好友XXX，发一条：卿本家人，我负卿卿",
+        "打开网易云音乐，搜索：末日狂奔（黄子弘凡）",
+        "打开携程，北京百子湾附近，低于300的快捷酒店，我不想死家里呀"
     )
     
     private fun showDoomsdayListDialog() {
@@ -722,7 +723,16 @@ class MainActivity : Activity(), LogCallback {
             Toast.makeText(this, "New Skin Unlocked: The Last Cyberphone", Toast.LENGTH_LONG).show()
         }
         
-        val apiKey = prefs.getString("api_key", "562eac47fb0c43fa995ee58261d12a52.Y2HAB0eRQPyXKiHI")
+        val apiKey = prefs.getString("api_key", "")
+        
+        if (apiKey.isNullOrEmpty()) {
+            Toast.makeText(this, "⚠️ 未配置 API Key! 请下拉进入设置页配置。", Toast.LENGTH_LONG).show()
+            // Optional: Automatically open settings
+            val intent = android.content.Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            return
+        }
+
         val baseUrl = prefs.getString("base_url", "https://open.bigmodel.cn/api/paas/v4/")
         val modelName = prefs.getString("model_name", "autoglm-phone")
         val language = prefs.getString("app_language", "Chinese")
