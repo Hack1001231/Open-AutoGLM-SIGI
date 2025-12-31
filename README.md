@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="android-app/app/src/main/res/drawable/title_sigillum_pixel.png" alt="SIGI Logo" width="100%" />
+  <img src="docs/screenshots/01_home.jpg" width="24%" />
+  <img src="docs/screenshots/02_list.jpg" width="24%" />
+  <img src="docs/screenshots/03_lockdown.jpg" width="24%" />
+  <img src="docs/screenshots/04_settings.jpg" width="24%" />
 </p>
 
 # AutoGLM-SIGI: 最后的赛博终端 (The Last Cyberphone)
