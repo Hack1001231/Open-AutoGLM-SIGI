@@ -227,6 +227,20 @@
                     android:minWidth="32dp" />
                     
             </LinearLayout>
+
+            <!-- Author Credit -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CREATED BY @颜桥"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#444444"
+                android:textSize="10sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="-30dp"
+                android:layout_marginBottom="24dp"
+                android:letterSpacing="0.2"
+                android:alpha="0.8" />
     
         </LinearLayout>
         
