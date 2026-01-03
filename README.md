@@ -13,6 +13,13 @@
 > **"世界就这样结束了，不是一声巨响，而是一声呜咽。"**
 > — *T.S. Eliot, The Hollow Men*
 
+> **电子赛博游戏 × AutoGLM：一场关于未来的思想实验**
+> 
+> **"带你预演 AI 手机的未来——关于它的无限可能，关于人类的希望，以及深层的恐惧。"**
+> 
+> 如果你厌倦了冰冷的效率工具，不妨试试这个疯狂的想法：**把 GUI Agent 重构为一台来自末日的赛博终端。**
+> 打破“工具”与“游戏”的界限，用叙事重塑交互。这不仅是一个助手，更是你口袋里的**微型赛博剧场**。
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
 [![Vibe](https://img.shields.io/badge/Vibe-Coding-purple.svg)](#creator)
