@@ -12,9 +12,18 @@
 > **"This is the way the world ends. Not with a bang but a whimper."**
 > — *T.S. Eliot, The Hollow Men*
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
-[![Vibe](https://img.shields.io/badge/Vibe-Coding-purple.svg)](#creator)
+> **Cyber Game × AutoGLM: A Thought Experiment on the Future**
+>
+> **"Previewing the future of AI phones — their infinite possibilities, human hopes, and deep-seated fears."**
+>
+> If you are tired of cold efficiency tools, try this crazy idea: **Refactoring a GUI Agent into a cyber terminal from the apocalypse.**
+> Breaking the boundary between "Tool" and "Game", reshaping interaction through narrative. This is not just an assistant, but a **micro cyber-theater** in your pocket.
+
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/airp2018/Open-AutoGLM-SIGI?color=00E676&label=SIGI%20Version&style=flat-square)](https://github.com/airp2018/Open-AutoGLM-SIGI/releases)
+[![License](https://img.shields.io/github/license/airp2018/Open-AutoGLM-SIGI?color=blue&style=flat-square)](LICENSE)
+[![GitHub repo size](https://img.shields.io/github/repo-size/airp2018/Open-AutoGLM-SIGI?style=flat-square)](https://github.com/airp2018/Open-AutoGLM-SIGI)
+[![Platform](https://img.shields.io/badge/platform-Android-green.svg?style=flat-square)](https://developer.android.com)
+[![Vibe](https://img.shields.io/badge/Vibe-Coding-purple.svg?style=flat-square)](#creator)
 
 ---
 
@@ -104,7 +113,7 @@ I am not a traditional "coder"; I am a **Storyteller** and **Creative Strategist
 *   **Background**: **Top-tier CS Degree (985)** + multidisciplinary knowledge background.
 *   **Identity**: **Novelist**. Works published in top literary journals such as *Harvest*, *People's Literature*, and *October*.
 *   **Commercial**: Original stories were acquired by the producers of *Detective Chinatown* and Hunan Broadcasting System for high value.
-*   **Crossover**: Provided creative strategy support for top brands like **HP, Chrysler, LV, and Burberry**.
+*   **Crossover**: Provided creative strategy support for top brands like **BMW, HP, Chrysler, LV, and Burberry**.
 
 > **"In the AI era, technology is no longer a barrier. Creative minds, empowered by Vibe Coding, will transform fresh ideas into tangible products. We light up your product with creative details."**
 
