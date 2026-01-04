@@ -22,6 +22,7 @@ class SettingsActivity : Activity() {
     
     // Background Music Player
     private var bgmPlayer: android.media.MediaPlayer? = null
+    private var currentArtifactDialog: android.app.Dialog? = null
 
     // Default Configurations
     private val ZHIPU_URL = "https://open.bigmodel.cn/api/paas/v4"
@@ -648,13 +649,15 @@ class SettingsActivity : Activity() {
         
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         
-        // Make full screen-ish (responsive to orientation)
-        val metrics = resources.displayMetrics
-        val width = (metrics.widthPixels * 0.95).toInt()
-        val maxHeight = (metrics.heightPixels * 0.8).toInt()
-        dialog.window?.setLayout(width, android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        // Full Screen (Match Parent)
+        dialog.window?.setLayout(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT, 
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+        )
         
         dialog.setCanceledOnTouchOutside(true)
+        currentArtifactDialog = dialog
+        dialog.setOnDismissListener { currentArtifactDialog = null }
         
         // Click anywhere to close
         dialog.findViewById<android.view.View>(android.R.id.content)?.setOnClickListener {
@@ -662,6 +665,17 @@ class SettingsActivity : Activity() {
         }
         
         dialog.show()
+    }
+    
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Refresh Dialog Size on Rotate
+        if (currentArtifactDialog?.isShowing == true) {
+             currentArtifactDialog?.window?.setLayout(
+                 android.view.ViewGroup.LayoutParams.MATCH_PARENT, 
+                 android.view.ViewGroup.LayoutParams.MATCH_PARENT
+             )
+        }
     }
 
     private fun startStarSignal() {

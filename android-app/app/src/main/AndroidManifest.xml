@@ -41,6 +41,7 @@
         <!-- 无障碍服务 -->
         <activity
             android:name=".SettingsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar" />
             
         <service
