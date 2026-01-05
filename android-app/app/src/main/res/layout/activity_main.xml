@@ -269,6 +269,23 @@
     
         </LinearLayout>
     
+        <!-- RULES Button (Top Left) -->
+        <TextView
+            android:id="@+id/btnRules"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:text="[ ⚠️ 告示 ]"
+            android:textColor="#00E676"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:padding="8dp" />
+    
         <!-- Settings Button (Top Right Gear) -->
         <ImageButton
             android:id="@+id/settingsButton"

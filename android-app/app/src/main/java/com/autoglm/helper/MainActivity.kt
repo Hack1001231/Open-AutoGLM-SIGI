@@ -47,11 +47,37 @@ class MainActivity : Activity(), LogCallback {
     private var sfxComplete: Int = 0
     private var sfxClick: Int = 0
 
+    // --- 🏳️ Apology Stamp Logic ---
+    private var taskStartTime: Long = 0
+    private val apologyStamps = mapOf(
+        "JP" to R.drawable.stamp_apology_jp,
+        "CN" to R.drawable.stamp_apology_cn,
+        "US" to R.drawable.stamp_apology_us,
+        "UK" to R.drawable.stamp_apology_uk,
+        "FR" to R.drawable.stamp_apology_fr,
+        "DE" to R.drawable.stamp_apology_de,
+        "IT" to R.drawable.stamp_apology_it,
+        "IN" to R.drawable.stamp_apology_in
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
         logText = findViewById(R.id.logText)
+
+        // --- 🏳️ Auto-Detect Task Completion for Latency Check ---
+        logText.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val text = s?.toString() ?: ""
+                // Check for completion signal (and ensure timer is active)
+                if (taskStartTime > 0 && (text.contains("[OK] 任务完成") || text.contains("MISSION ACCOMPLISHED"))) {
+                     checkLatencyAndCompensate()
+                }
+            }
+        })
         logScroll = findViewById(R.id.logScroll)
         logToggle = findViewById(R.id.logToggle)
         taskInput = findViewById(R.id.taskInput)
@@ -125,6 +151,11 @@ class MainActivity : Activity(), LogCallback {
             // 🌍 拯救世界计数器 (Read Only here)
             val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
             val saveCount = prefs.getInt("world_save_count", 0)
+            
+
+
+            // --- 🏳️ Check Latency Compensation BEFORE Reset ---
+            checkLatencyAndCompensate()
             
             // Visual Interaction: Turn Green + EXTINGUISH Star
             stopButton.setBackgroundResource(R.drawable.btn_salvation) // Turn Green Ellipse
@@ -207,6 +238,25 @@ class MainActivity : Activity(), LogCallback {
         btnModeSwitch.setOnClickListener {
             playSfx(sfxClick)
             showModeSelectionDialog()
+        }
+
+        // --- 📜 RULES BUTTON LOGIC ---
+        val btnRules = findViewById<TextView>(R.id.btnRules)
+        btnRules.setOnClickListener {
+            playSfx(sfxClick)
+            showRulesDialog()
+        }
+
+        // Auto-Show Rules on First Run
+        val rulesPref = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+        if (rulesPref.getBoolean("has_seen_rules", false)) {
+            // Already seen -> Ghost Mode (Invisible but clickable)
+            btnRules.alpha = 0f
+        } else {
+            // First time -> Show immediately
+            btnRules.alpha = 1f
+            // Delay slightly to let layout settle
+            handler.postDelayed({ showRulesDialog() }, 1000)
         }
         
         // Initialize SoundPool
@@ -429,6 +479,37 @@ class MainActivity : Activity(), LogCallback {
         }
         
         btnClose.setOnClickListener { dialog.dismiss() }
+        
+        dialog.show()
+    }
+
+    // --- 📜 RULES SYSTEM ---
+    private fun showRulesDialog() {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_rules)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        // Size
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            (resources.displayMetrics.heightPixels * 0.8).toInt()
+        )
+        
+        val btnClose = dialog.findViewById<android.view.View>(R.id.btnCloseRules)
+        btnClose.setOnClickListener {
+            playSfx(sfxClick)
+            dialog.dismiss()
+        }
+        
+        dialog.setOnDismissListener {
+            // Logic: Mark seen & Ghost Button
+            val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+            prefs.edit().putBoolean("has_seen_rules", true).apply()
+            
+            // Fade out
+            val btn = findViewById<TextView>(R.id.btnRules)
+            btn?.animate()?.alpha(0f)?.setDuration(1500)?.start()
+        }
         
         dialog.show()
     }
@@ -777,7 +858,7 @@ class MainActivity : Activity(), LogCallback {
                 
                 playSfx(sfxComplete)
                 // Show Zheng Bang Toast
-                val toast = Toast.makeText(this, "\n   蒸 蚌 !!!   \n   (Zheng Bang)   \n   (CREDITS +50)   \n", Toast.LENGTH_LONG)
+                val toast = Toast.makeText(this, "[ 得到蒸蚌 ]\n(CREDITS +50)", Toast.LENGTH_LONG)
                 val view = toast.view
                 view?.setBackgroundColor(android.graphics.Color.parseColor("#FFD700"))
                 val text = view?.findViewById<TextView>(android.R.id.message)
@@ -834,6 +915,11 @@ class MainActivity : Activity(), LogCallback {
             executeTaskLogic(prefs)
             return
         }
+
+
+
+        // --- Start Timer for Apology Logic ---
+        taskStartTime = System.currentTimeMillis()
 
         // 0. Lockdown Check with Auto-Unlock (Limited State)
         var fatigueCount = prefs.getInt("fatigue_count", 0)
@@ -1289,5 +1375,125 @@ class MainActivity : Activity(), LogCallback {
             return true
         }
         return false
+    }
+    // --- 🏳️ Apology Compensation Logic ---
+    private fun checkLatencyAndCompensate() {
+        // Threshold: 75 seconds (1m 15s) - Production Setting
+        if (taskStartTime > 0 && (System.currentTimeMillis() - taskStartTime) > 75000) {
+            
+            val prefs = getSharedPreferences("AutoGLMConfig", android.content.Context.MODE_PRIVATE)
+            val allKeys = apologyStamps.keys.toList()
+            
+            // 1. Smart Selection: Prioritize Uncollected
+            val missingKeys = allKeys.filter { key ->
+                prefs.getInt("stamp_count_$key", 0) == 0
+            }
+            
+            val selectedKey: String
+            val isNew: Boolean
+            
+            if (missingKeys.isNotEmpty()) {
+                // Phase 1: Still collecting, guarantee unique
+                selectedKey = missingKeys.random()
+                isNew = true
+            } else {
+                // Phase 2: Collection complete, random stacking
+                selectedKey = allKeys.random()
+                isNew = false
+            }
+            
+            val resId = apologyStamps[selectedKey] ?: return
+            
+            // 2. Increment Count & Reward
+            val currentCount = prefs.getInt("stamp_count_$selectedKey", 0)
+            val newCount = currentCount + 1
+            prefs.edit().putInt("stamp_count_$selectedKey", newCount).apply()
+            
+            // Always +5 Credits
+            val currentCoins = prefs.getInt("agent_coins", 0)
+            prefs.edit().putInt("agent_coins", currentCoins + 5).apply()
+
+            // 3. Construct Message Data
+            val countryEmoji = when(selectedKey) {
+                "JP" -> "🇯🇵"
+                "CN" -> "🇨🇳"
+                "US" -> "🇺🇸"
+                "UK" -> "🇬🇧"
+                "FR" -> "🇫🇷"
+                "DE" -> "🇩🇪"
+                "IT" -> "🇮🇹"
+                "IN" -> "🇮🇳"
+                else -> ""
+            }
+            val countryNameCN = when(selectedKey) {
+                "JP" -> "日本"
+                "CN" -> "中国"
+                "US" -> "美国"
+                "UK" -> "英国"
+                "FR" -> "法国"
+                "DE" -> "德国"
+                "IT" -> "意大利"
+                "IN" -> "印度"
+                else -> selectedKey
+            }
+            
+            val message = if (isNew) {
+                "[ 延误补偿 ] 收到 $countryEmoji 道歉券 (NEW!)\nCREDITS +5"
+            } else {
+                "[ 延误补偿 ] 收到 $countryEmoji 道歉券 (x$newCount)\nCREDITS +5"
+            }
+
+            // 4. Adaptive Feedback
+            if (isNew) {
+                // New Collection -> Show Dialog!
+                val dialog = android.app.Dialog(this)
+                dialog.setContentView(R.layout.dialog_artifact_detail) // Reuse detail Layout
+                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                
+                val img = dialog.findViewById<android.widget.ImageView>(R.id.detailImage)
+                val overlayContainer = dialog.findViewById<android.view.View>(R.id.overlayContainer)
+                val tvLeft = dialog.findViewById<TextView>(R.id.overlayValueLeft)
+                val tvRight = dialog.findViewById<TextView>(R.id.overlayValueRight)
+                val tvName = dialog.findViewById<TextView>(R.id.overlayName)
+                
+                img.setImageResource(resId)
+                
+                // Show Explanatory Text Overlay
+                if (overlayContainer != null) {
+                    overlayContainer.visibility = android.view.View.VISIBLE
+                    if (tvLeft != null) tvLeft.visibility = android.view.View.GONE
+                    if (tvRight != null) tvRight.visibility = android.view.View.GONE
+                    
+                    if (tvName != null) {
+                        tvName.visibility = android.view.View.VISIBLE
+                        tvName.text = "收到了 $countryNameCN 道歉券 (+5)"
+                        tvName.textSize = 18f // Make it readable
+                    }
+                }
+                
+                // Force Layout Params
+                dialog.window?.setLayout(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT, 
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                )
+
+                // Close on click (Entire screen OR text)
+                dialog.setCanceledOnTouchOutside(true)
+                dialog.findViewById<android.view.View>(android.R.id.content).setOnClickListener { dialog.dismiss() }
+                dialog.show()
+                
+                // Also show toast just in case they miss the bottom text
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                
+            } else {
+                 // Duplicate -> Toast Only (Quiet Mode)
+                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            }
+
+            // 5. Reset Timer
+            taskStartTime = 0
+            
+            playSfx(sfxComplete)
+        }
     }
 }

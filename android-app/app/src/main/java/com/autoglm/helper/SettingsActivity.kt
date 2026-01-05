@@ -562,8 +562,34 @@ class SettingsActivity : Activity() {
         }
 
         // 3. Zheng Bang Coin (Easy Mode Reward)
+
         if (prefs.getBoolean("permanent_unlock", false)) {
             artifacts.add(Artifact("zheng_bang_coin", "蒸蚌", R.drawable.asset_banknote_cat))
+        }
+
+        // 4. Apology Stamps (The Alliance)
+        val apologyStamps = mapOf(
+            "JP" to R.drawable.stamp_apology_jp,
+            "CN" to R.drawable.stamp_apology_cn,
+            "US" to R.drawable.stamp_apology_us,
+            "UK" to R.drawable.stamp_apology_uk,
+            "FR" to R.drawable.stamp_apology_fr,
+            "DE" to R.drawable.stamp_apology_de,
+            "IT" to R.drawable.stamp_apology_it,
+            "IN" to R.drawable.stamp_apology_in
+        )
+        val countryNames = mapOf(
+            "JP" to "日本", "CN" to "中国", "US" to "美国", "UK" to "英国",
+            "FR" to "法国", "DE" to "德国", "IT" to "意大利", "IN" to "印度"
+        )
+        
+        for ((code, resId) in apologyStamps) {
+            val count = prefs.getInt("stamp_count_$code", 0)
+            if (count > 0) {
+                // e.g. "中国 x2"
+                val name = "${countryNames[code] ?: code} x$count"
+                artifacts.add(Artifact("apology_$code", name, resId))
+            }
         }
 
         // If empty
@@ -636,6 +662,16 @@ class SettingsActivity : Activity() {
             val btn = dialog.findViewById<android.widget.Button>(R.id.btnCollectTicket)
             btn.text = "[ ARCHIVED ]"
             btn.isEnabled = false
+            
+        } else if (artifact.id.startsWith("apology_")) {
+            // Generic Apology Stamp Display
+            dialog.setContentView(R.layout.dialog_artifact_detail)
+            val img = dialog.findViewById<android.widget.ImageView>(R.id.detailImage)
+            val overlayContainer = dialog.findViewById<android.view.View>(R.id.overlayContainer)
+            
+            img.setImageResource(artifact.iconRes)
+            overlayContainer.visibility = android.view.View.GONE
+            
         } else {
             // Fallback generic
              return

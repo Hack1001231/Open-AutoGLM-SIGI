@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EE000000"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- TITLE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="> 赛博生存法则 (RULES)"
+            android:textColor="#00E676"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- RULES CONTAINER -->
+        <TextView
+            android:id="@+id/tvRulesContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#DDFFFFFF"
+            android:textSize="16sp"
+            android:lineSpacingMultiplier="1.4"
+            android:fontFamily="sans-serif-condensed"
+            android:text="1、本游戏为 [赛博科幻 X AutoGLM] 实验项目，需官方 API 支持，请前往智谱官方注册获取。\n\n2、[ 质子封锁 ]：在执行 7 次任务后，系统将强制锁定 3 分钟。您必须在循环结束前解锁系统。\n\n3、[ 代币经济 ]：\n   - 容易模式：积 66 代币永久解锁。\n   - 困难模式：积 188 代币永久解锁。\n   - 收入：自定义任务 +1，清单任务 +3。\n\n4、[ 适格者 ]：容易模式适合一般人类；困难模式专为科幻迷、悬疑推理迷、剧本杀玩家等高智人群设计。\n\n5、[ 外卖延误险 ]：Agent 执行超时将触发补偿机制，您将获得【八国道歉券】(积 5 代币)。传说攒够 8 张不同国家的道歉券，可以马上移民。\n\n(所有代币保留在 Settings 资产金库中，请自由探索。)"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- CLOSE BUTTON -->
+        <Button
+            android:id="@+id/btnCloseRules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[ 我已阅读并知晓 ]"
+            android:textColor="#00E676"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="16dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
