@@ -10,8 +10,18 @@
 # AutoGLM-SIGI: 最后的赛博终端 (The Last Cyberphone)
 
 ## 🌟 SIGI v3.2: "The Apology Alliance" (道歉者联盟)
+
+> **"延误赔偿让 AI 显得更有人情味，像一个辛苦的外卖员，而不是工具。"**
+
 > **新功能上线**: 引入了 **任务延误补偿机制 (Latency Compensation)**。
-> 当 Agent 任务执行超过 **30秒**，系统将自动触发 "外卖延误险"，向用户发放一张 **"道歉券" (Apology Token)**。
+> 当 Agent 任务执行超过 **75秒**，系统将自动触发 "外卖延误险"，向用户发放一张 **"道歉券" (Apology Token)**。
+
+<p align="center">
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_cn.png" width="20%" />
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_in.png" width="20%" />
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_us.png" width="20%" />
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_it.png" width="20%" />
+</p>
 > *   **8国道歉天团**: 随机掉落 8 张不同国家 (🇯🇵 🇨🇳 🇺🇸 🇬🇧 🇫🇷 🇩🇪 🇮🇹 🇮🇳) 的精美复古邮票。
 > *   **智能收藏**: 系统优先发放未收集的邮票；集齐后自动堆叠数量 (例如 "China x2")。
 > *   **积分补偿**: 每次延误，无论获得何种邮票，均补偿 **+5 积分**。
