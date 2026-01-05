@@ -9,6 +9,25 @@
 
 # AutoGLM-SIGI: The Last Cyberphone
 
+## 🌟 SIGI v3.2: "The Apology Alliance"
+
+> **"Delay compensation makes AI feel more human, like a hardworking delivery rider, rather than just a tool."**
+
+> **New Feature**: Introduced **Latency Compensation Mechanism**.
+> When the Agent task execution exceeds **75 seconds**, the system automatically triggers "Delivery Delay Insurance" and issues an **"Apology Token"** to the user.
+
+<p align="center">
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_cn.png" width="20%" />
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_in.png" width="20%" />
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_jp.png" width="20%" />
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_it.png" width="20%" />
+</p>
+
+> *   **8 Nations Tour**: Randomly drops 8 different apology stamps (🇯🇵 🇨🇳 🇺🇸 🇬🇧 🇫🇷 🇩🇪 🇮🇹 🇮🇳) styled as vintage stamps.
+> *   **Smart Collecting**: Prioritizes uncollected stamps; stacks duplicates (e.g., "China x2") once collected.
+> *   **Compensation**: Every delay awards **+5 Credits**, regardless of the stamp type.
+> *   **Asset Vault**: View all collected tokens in `Settings -> Asset Vault`.
+
 > **"This is the way the world ends. Not with a bang but a whimper."**
 > — *T.S. Eliot, The Hollow Men*
 
