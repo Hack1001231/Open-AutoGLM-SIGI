@@ -82,7 +82,7 @@ SIGI is inspired by **"The Three-Body Problem"** and **Classic Cyberpunk aesthet
 
 We reject cold, utilitarian tools. **"He who captures emotions, captures the user."**
 
-We predict that AI products will shift from function-driven to an era dominated by **Emotional Consumption**. SIGI provides a space for "mood consumption"—here, your phone is no longer just a tool, but a vessel for your emotions.
+We predict that AI products will shift from function-driven to an era dominated by **Emotional Consumption**. Just like dining at a dark restaurant isn't solely about the taste of the food, SIGI provides a space for "mood consumption"—here, your phone is no longer just a tool, but a vessel for your emotions, and the Agent is the vehicle navigating the city, arriving at the destination of psychological consumption.
 
 #### The Doomsday Protocols
 We embedded narratives into the most basic command list. Each preset command is a micro-story fragment about love, parting, survival, and desire:
