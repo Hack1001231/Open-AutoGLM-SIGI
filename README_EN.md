@@ -65,7 +65,7 @@
 
 ### 02. Narrative UI & Thought Experiment
 
-We are not building a tool; we are building a **"Narrative UI"**.
+We are not building a tool; we are building a **"Narrative UI"** (Story Skin)—a story becomes the UI's scene and stage, giving technology an exquisite "soft packaging." Skins can evolve, and users feel as if they're entering different theaters.
 
 **SIGILLUM MENTIS** is Latin for "Seal of the Mind" (Thought Stamp). In this era of information overload, we aim to imprint the mark of thought.
 
