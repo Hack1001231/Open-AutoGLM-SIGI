@@ -19,7 +19,7 @@
 <p align="center">
   <img src="android-app/app/src/main/res/drawable/stamp_apology_cn.png" width="20%" />
   <img src="android-app/app/src/main/res/drawable/stamp_apology_in.png" width="20%" />
-  <img src="android-app/app/src/main/res/drawable/stamp_apology_us.png" width="20%" />
+  <img src="android-app/app/src/main/res/drawable/stamp_apology_jp.png" width="20%" />
   <img src="android-app/app/src/main/res/drawable/stamp_apology_it.png" width="20%" />
 </p>
 > *   **8国道歉天团**: 随机掉落 8 张不同国家 (🇯🇵 🇨🇳 🇺🇸 🇬🇧 🇫🇷 🇩🇪 🇮🇹 🇮🇳) 的精美复古邮票。
