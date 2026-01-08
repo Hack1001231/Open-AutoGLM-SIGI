@@ -139,7 +139,7 @@ SIGI 采用 **单进程混合架构 (Single-Process Hybrid)**，通过 Chaquopy 
 2.  **手眼 (Hand & Eye)**: Android 原生层负责截图 (`MediaProjection`) 和模拟操作 (`AccessibilityService`)。
 3.  **神经 (Nerve)**: 两者通过内存级 JNI 通信，**零延迟**传输指令与数据，彻底告别了传统 HTTP/Socket 通信的卡顿。
 
-### 06. 创作者介绍
+### 06. 开发者介绍
 
 **SIGI 由 Yanqiao ([微博 @颜桥](https://weibo.com/n/颜桥)) 创作。**
 
