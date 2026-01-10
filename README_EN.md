@@ -57,7 +57,7 @@
 
 ### 01. Zero-Cost AI Phone
 
-**Stop paying $10,000 for hyping AI hardware. SIGI transforms your old Android into a top-tier AI terminal instantly.**
+**This project aims to let a broader audience enjoy the "fun creativity" of open-source code (not limited to engineering projects). With a one-click install, your phone instantly becomes a "Doubao Phone," entering a virtual game world. It combines AI infrastructure with sci-fi storytelling, infiltrating script-kill and escape room elements, providing a playful experiment for an imagined "AI Phone."**
 
 *   **Zero Cost**: Free to use if you have an Android phone.
 *   **Zero Barrier**: No PC required, no Termux CLI. One-click install `.apk`, instantly becoming a LAM (Large Action Model) agent.
@@ -101,12 +101,13 @@ We refactored the open-source Open-AutoGLM with a **"Dimensional Strike"** level
 *   **Old Way (Competitors)**: Requires installing Termux + configuring Python environment + complex dual-process communication. Phone overheats, lags, and crashes easily.
 *   **SIGI Way (This Solution)**: **Single-Process Hybrid Architecture**. The Python agent is directly embedded into the Android core.
 
-| Feature | Termux Solution | SIGI (Next-Gen) |
+| Feature | Termux / Shizuku (Competitors) | SIGI (Next-Gen) |
 | :--- | :--- | :--- |
-| **Deployment Difficulty** | 🛑 Extremely Hard (Requires Termux/CLI) | ✅ **Extremely Simple (One-click APK install)** |
-| **Response Speed** | 🐢 Slow (~500ms latency) | ⚡ **Light Speed (~3ms in-process direct)** |
-| **Stability** | 🔥 Overheating, prone to crashes | ✅ **Stable, smooth, low power** |
-| **Experience** | 📟 Dry command line | 🎮 **Immersive Cyberpunk gaming experience** |
+| **Deployment Difficulty** | 🛑 **"Hellish"** (CLI + Mirror Config + Pair Code) | ✅ **"Noob-Friendly"** (Install APK + Grant = Done) |
+| **Permissions Persistence**| ☠️ **Dies on Reboot** (Requires PC/Re-pairing) | 💎 **Permanent** (Auto-launch on boot, never offline) |
+| **Environment Dependency** | 🏗️ **Heavy** (Needs Linux, Python, Deps) | 🚀 **Zero Deps** (Built-in Python VM, App is Env) |
+| **Response Speed** | 🐢 Slow (ADB protocol "detour") | ⚡ **Light Speed** (In-process direct, ms latency) |
+| **Product Form** | 📟 **Geek Scripts** | 🎮 **Consumer App** |
 
 ### 05. Technical Architecture
 
